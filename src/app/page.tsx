@@ -1,13 +1,10 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
     <main>
-      <h1 className="text-4xl font-bold mb-6">Projeto FRONT</h1>
-      <p>
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Rem fugiat
-        officia excepturi atque, necessitatibus, ut quibusdam quia ipsum earum
-        aspernatur nisi non quasi. Delectus culpa placeat necessitatibus
-        perferendis fuga cumque?
-      </p>
+      <h1 className="text-4xl font-bold mb-6">Faz um PIX</h1>
+      <Link href="/login" className="bg-red-700 rounded-lg">Logar</Link>
     </main>
   );
 }
