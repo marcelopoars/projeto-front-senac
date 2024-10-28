@@ -6,8 +6,8 @@ import {parseDate} from '@internationalized/date';
 export default function Home() {
   return (
     <section>
-        <div className="flex gap-x-4">
-            <Calendar aria-label="Date (No Selection)" />
+        <div className="flex-auto gap-x-4 bg-gray-200 text-black">
+            <Calendar aria-label="Date (Controlled)" />
         </div>
     </section>
   );
