@@ -1,13 +1,18 @@
-"use client";
+"use client"
 
-import {Calendar} from "@nextui-org/calendar";
+import { useState } from "react";
+import Calendar from "react-calendar";
 
-export default function Home() {
+type ValuePiece = Date | null;
+
+type Value = ValuePiece | [ValuePiece, ValuePiece];
+
+export default function AgendaPage() {
+  const [value, onChange] = useState<Value>(new Date());
+
   return (
-    <section>
-        <div className="flex-auto gap-x-4 bg-gray-200 text-black">
-            <Calendar aria-label="Date (Controlled)" />
-        </div>
-    </section>
+    <div>
+      <Calendar onChange={onChange} value={value} />
+    </div>
   );
 }
