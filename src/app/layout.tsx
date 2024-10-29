@@ -16,8 +16,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Projeto Front",
-  description: "Projeto criado para a o SENAC",
+  title: "🗓️ Agendar",
+  description: "Encontre um profisional e agende um serviço.",
 };
 
 export default function RootLayout({
