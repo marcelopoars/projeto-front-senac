@@ -4,21 +4,21 @@ export default function ServiceProviderDetailsPage() {
   return (
     <section>
       <div className="container px-6 py-12">
-        <h1 className="font-bold mb-8 text-3xl">Ana Maria</h1>
+        <div className="flex items-baseline justify-between mb-8">
+          <h1 className="font-bold text-3xl">Ana Maria</h1>
+          <Share />
+        </div>
 
-        <div className="flex gap-12">
-          <div className="size-[250px] bg-zinc-200 flex items-center justify-center">
+        <div className="flex flex-col items-start gap-12 md:flex-row">
+          <div className="w-full h-[250px] bg-zinc-200 flex items-center justify-center md:w-[250px]">
             LOGO
           </div>
 
-          <div className="max-w-[800px]">
+          <div className="flex-1 max-w-[800px]">
             <div className="mb-8">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold">
-                  Descrição dos Serviços
-                </h2>
-                <Share />
-              </div>
+              <h2 className="text-xl font-semibold mb-8">
+                Descrição dos Serviços
+              </h2>
 
               <p>
                 Sou uma fotógrafa profissional dedicada a capturar momentos
