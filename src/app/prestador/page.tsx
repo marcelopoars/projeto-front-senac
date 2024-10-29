@@ -1,4 +1,12 @@
+import { Metadata } from "next";
+
 import { Share } from "./components";
+
+export const metadata: Metadata = {
+  title: "Ana Maria",
+  description:
+    "Sou uma fotógrafa profissional dedicada a capturar momentos únicos com sensibilidade e criatividade.",
+};
 
 export default function ServiceProviderDetailsPage() {
   return (
