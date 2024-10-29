@@ -1,13 +1,12 @@
 import { Calendar } from "./components";
+import { Customer } from "./components";
 
 export default function AgendaPage() {
   return (
-    <div className="flex gap-6">
+    <div className="h-fit w-fit flex my-auto mx-auto">
       <Calendar />
 
-      <div className="bg-gray-300">
-        <h2 className="font-bold">Cliente</h2>
-      </div>
+      <Customer />
     </div>
   );
 }

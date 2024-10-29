@@ -6,7 +6,7 @@ import "./styles.css";
 
 export function Calendar() {
   return (
-    <div className="max-w-[400px]">
+    <div className="bg-slate-300">
       <ReactCalendar />
     </div>
   );
