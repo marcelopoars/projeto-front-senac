@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     template: "Agendar | %s",
     default: "Agendar"
   },
-  description: "Encontre um profisional e agende um serviço. 123456789",
+  description: "Encontre um profisional e agende um serviço.",
 };
 
 export default function RootLayout({
