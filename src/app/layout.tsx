@@ -16,7 +16,11 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "🗓️ Agendar",
+  generator: 'Next.js',
+  title: {
+    template: "Agendar | %s",
+    default: "Agendar"
+  },
   description: "Encontre um profisional e agende um serviço.",
 };
 
