@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 
 interface ServiceProviderProps {
@@ -6,19 +5,15 @@ interface ServiceProviderProps {
   image: string;
 }
 
-export function ServiceProvidersCard({ image, name }: ServiceProviderProps) {
+export function ServiceProvidersCard({ name }: ServiceProviderProps) {
   return (
     <Link
       href="/prestador"
       className="group inline-block border rounded-lg overflow-hidden w-full hover:border-sky-500 transition"
     >
-      <Image
-        src={image}
-        alt={name}
-        width={150}
-        height={200}
-        className="w-full h-[200px] object-cover group-hover:opacity-80 transition"
-      />
+      <div className="w-full h-[200px] bg-zinc-200 flex items-center justify-center group-hover:opacity-80 transition">
+        LOGO
+      </div>
       <header className="py-2 px-4">
         <h2 className="font-semibold text-xl text-zinc-600 group-hover:text-sky-500 transition">
           {name}
