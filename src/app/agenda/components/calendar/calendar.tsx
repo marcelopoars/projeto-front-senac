@@ -6,8 +6,8 @@ import "./styles.css";
 
 export function Calendar() {
   return (
-    <div className="bg-slate-300">
-      <ReactCalendar />
+    <div className="bg-slate-300" suppressHydrationWarning>
+      <ReactCalendar locale='pt-BR'/>
     </div>
   );
 }
