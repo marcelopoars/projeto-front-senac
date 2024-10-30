@@ -1,11 +1,11 @@
 import { randomUUID } from "crypto";
 
-type ServiceProvider = {
+interface ServiceProvider {
   id: string;
   name: string;
   image: string;
   categoria: string;
-};
+}
 
 const categories = [
   "Automotivo",

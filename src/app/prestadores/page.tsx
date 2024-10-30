@@ -1,5 +1,5 @@
 import { serviceProviders } from "@/api";
-import Image from "next/image";
+import { ServiceProvidersCard } from "./components";
 
 export default function ProviderListingPage() {
   console.log(serviceProviders);
@@ -12,33 +12,29 @@ export default function ProviderListingPage() {
             Selecione o prestador de serviço
           </h1>
 
-          <select
-            name="category"
-            id="category"
-            className="cursor-pointer border py-2 px-3 hover:bg-zinc-100/80"
-          >
-            <option value="Automotivo">Automotivo</option>
-            <option value="Beleza">Beleza</option>
-            <option value="Consultoria">Consultoria</option>
-            <option value="Fotografia">Fotografia</option>
-            <option value="Jardinagem">Jardinagem</option>
-            <option value="Limpeza">Limpeza</option>
-            <option value="Manutenção">Manutenção</option>
-            <option value="Outros">Outros</option>
-          </select>
+          <div className="flex items-center gap-2">
+            <label htmlFor="category">Categoria: </label>
+            <select
+              name="category"
+              id="category"
+              className="cursor-pointer border py-2 px-3 hover:bg-zinc-100/80 text-base"
+            >
+              <option value="Automotivo">Automotivo</option>
+              <option value="Beleza">Beleza</option>
+              <option value="Consultoria">Consultoria</option>
+              <option value="Fotografia">Fotografia</option>
+              <option value="Jardinagem">Jardinagem</option>
+              <option value="Limpeza">Limpeza</option>
+              <option value="Manutenção">Manutenção</option>
+              <option value="Outros">Outros</option>
+            </select>
+          </div>
         </div>
 
         <div className="grid justify-around content-around grid-cols-2 gap-6 md:grid-cols-4 lg:grid-cols-5 lg:gap-8">
           {serviceProviders.map(({ id, name, image }) => (
             <article key={id}>
-              <Image
-                src={image}
-                alt={name}
-                width={150}
-                height={150}
-                className="w-full h-auto object-cover"
-              />
-              <h2 className="font-semibold">{name}</h2>
+              <ServiceProvidersCard image={image} name={name} />
             </article>
           ))}
         </div>
