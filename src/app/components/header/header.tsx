@@ -16,7 +16,7 @@ export function Header() {
             Entrar
           </Link>
           <Link
-            href="/login"
+            href="/cadastro"
             className="bg-sky-800 text-sm  rounded-lg text-white py-2 px-3 md:text-base"
           >
             Cadastrar

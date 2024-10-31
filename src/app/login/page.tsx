@@ -20,12 +20,16 @@ export default function Home() {
               placeholder="Senha"
               className="border p-3 rounded-lg"
             />
-            <button className="bg-sky-500 p-3 rounded-lg" type="button">
+            <Link
+              href={"/"}
+              className="bg-sky-500 p-3 rounded-lg text-center font-semibold"
+              type="button"
+            >
               Entrar
-            </button>
+            </Link>
           </form>
-          <Link href="/cadastro" className="text-center block mt-2">
-            Criar cadastro
+          <Link href="/cadastro" className="text-center block mt-2 underline underline-offset-2">
+            Cadastrar
           </Link>
         </div>
       </div>
