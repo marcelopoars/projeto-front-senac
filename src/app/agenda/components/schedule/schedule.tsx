@@ -1,8 +1,11 @@
 "use client";
 import React, { useState } from "react";
 
+interface ScheduleProps {
+  setShow: (type: string) => void;
+}
 
-export function Schedule() {
+export function Schedule({ setShow }: ScheduleProps) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -76,7 +79,7 @@ export function Schedule() {
         <button
           className="bg-slate-500 text-white py-2 px-4 rounded-lg font-bold text-sm w-full hover:bg-slate-600"
           type="button"
-          
+          onClick={() => setShow("customer")}
         >
           Agendar
         </button>

@@ -10,7 +10,7 @@ export function TimeStamps() {
         {hours.map((hour, index) => (
           <div
             key={index}
-            className="text-center bg-gray-400 text-black font-bold py-2 rounded-lg hover:bg-gray-500 cursor-pointer"
+            className="text-center bg-slate-400 text-black font-bold py-2 rounded-lg hover:bg-slate-500 cursor-pointer"
           >
             {hour}
           </div>

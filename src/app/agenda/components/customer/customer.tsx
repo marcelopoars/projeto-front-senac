@@ -14,7 +14,7 @@ export function Customer({ setShow }: CustomerProps) {
         <strong>Telefone:</strong> (51) 99999-9999
       </div>
       <div className="text-sm mb-4">
-        <strong>E-mailu</strong> joaodasilva@gmail.com
+        <strong>E-mail</strong> joaodasilva@gmail.com
       </div>
       <button
         type="button"
