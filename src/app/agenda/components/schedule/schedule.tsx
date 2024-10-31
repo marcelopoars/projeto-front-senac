@@ -77,7 +77,7 @@ export function Schedule({ setShow }: ScheduleProps) {
           />
         </div>
         <button
-          className="bg-slate-500 text-white py-2 px-4 rounded-lg font-bold text-sm w-full hover:bg-slate-600"
+          className="bg-sky-500 p-3 rounded-lg text-center font-semibold hover:bg-sky-600"
           type="button"
           onClick={() => setShow("customer")}
         >
