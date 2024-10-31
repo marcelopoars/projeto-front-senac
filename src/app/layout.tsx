@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Footer, Header } from "./components";
 
 import "./globals.css";
 
@@ -16,10 +15,10 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  generator: 'Next.js',
+  generator: "Next.js",
   title: {
     template: "Agendar | %s",
-    default: "Agendar"
+    default: "Agendar",
   },
   description: "Encontre um profisional e agende um serviço.",
 };
@@ -32,11 +31,9 @@ export default function RootLayout({
   return (
     <html lang="pt-br">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col h-screen `}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <main className="flex flex-col h-screen">{children}</main>
       </body>
     </html>
   );
