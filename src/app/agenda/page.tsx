@@ -1,12 +1,22 @@
+"use client";
+import { useState } from "react";
 import { Calendar } from "./components";
+import { Customer } from "./components";
+import { TimeStamps } from "./components";
+import { Schedule } from "./components";
 
 export default function AgendaPage() {
+  const [show, setShow] = useState("customer");
   return (
-    <div className="flex gap-6">
-      <Calendar />
+    <div className="flex flex-col items-center  mt-20">
+      <div className="flex">
+        <div className="flex flex-col">
+          <Calendar />
+          <TimeStamps />
+        </div>
+        {show === "customer" && <Customer setShow={setShow} />}
 
-      <div className="bg-gray-300">
-        <h2 className="font-bold">Cliente</h2>
+        {show === "schedule" && <Schedule setShow={setShow} />}
       </div>
     </div>
   );
