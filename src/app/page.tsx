@@ -1,22 +1,20 @@
+import { categories } from "@/api";
+
 import { CardCategory } from "./components";
 
 export default function Home() {
   return (
-    <section className="w-[98%] m-4 p-6 h-90 flex flex-col justify-center items-center">
-      <div className="w-[50%] h-10 text-lg font-bold mb-6">
-        <h2 className="text-center h-14 font-bold text-3xl">
+    <section>
+      <div className="container px-6 py-12">
+        <h1 className="font-bold text-2xl text-center mb-8 md:text-3xl lg:mb-12">
           Qual categoria de serviço você deseja utilizar?
-        </h2>
-      </div>
-      <div className="w-[96%] flex flex-wrap justify-center">
-        <CardCategory />
-        <CardCategory />
-        <CardCategory />
-        <CardCategory />
-        <CardCategory />
-        <CardCategory />
-        <CardCategory />
-        <CardCategory />
+        </h1>
+
+        <div className="grid justify-around content-around grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4 lg:gap-12">
+          {categories.map((category) => (
+            <CardCategory key={category} category={category} />
+          ))}
+        </div>
       </div>
     </section>
   );
