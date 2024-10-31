@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Footer, Header } from "./components";
+
 import "./globals.css";
 
 const geistSans = localFont({
@@ -14,8 +16,12 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Projeto Front",
-  description: "Projeto criado para a o SENAC",
+  generator: 'Next.js',
+  title: {
+    template: "Agendar | %s",
+    default: "Agendar"
+  },
+  description: "Encontre um profisional e agende um serviço.",
 };
 
 export default function RootLayout({
@@ -26,16 +32,11 @@ export default function RootLayout({
   return (
     <html lang="pt-br">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col h-screen `}
       >
-
-
-        {children}
-
-
-        <footer className="pt-20">
-          <p className="text-xs text-center">2024 | Senac RS</p>
-        </footer>
+        <Header />
+        <main className="flex-1">{children}</main>
+        <Footer />
       </body>
     </html>
   );
