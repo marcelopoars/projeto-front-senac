@@ -1,8 +1,12 @@
+"use client";
+import { useState } from "react";
 import { Calendar } from "./components";
 import { Customer } from "./components";
 import { TimeStamps } from "./components";
+import { Schedule } from "./components";
 
 export default function AgendaPage() {
+  const [show, setShow] = useState("customer");
   return (
     <div className="flex flex-col items-center justify-center min-h-screen my-10">
       <div className="flex">
@@ -13,8 +17,9 @@ export default function AgendaPage() {
 
           <TimeStamps />
         </div>
-      
-        <Customer />
+        {show === "customer" && <Customer setShow={setShow} />}
+
+        {show === "schedule" && <Schedule />}
       </div>
     </div>
   );
