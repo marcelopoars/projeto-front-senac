@@ -3,9 +3,6 @@ import Link from "next/link";
 export default function Home() {
   return (
     <section className="flex h-full">
-      <div className="bg-gray-300 flex-1 flex items-center justify-center">
-        IMAGEM
-      </div>
       <div className="flex-1 flex items-center justify-center">
         <div>
           <h1 className="text-center font-semibold mb-5">Login</h1>
@@ -14,11 +11,13 @@ export default function Home() {
               type="email"
               placeholder="Email"
               className="border p-3 rounded-lg"
+              required
             />
             <input
               type="password"
               placeholder="Senha"
               className="border p-3 rounded-lg"
+              required
             />
             <Link
               href={"/"}
@@ -28,7 +27,10 @@ export default function Home() {
               Entrar
             </Link>
           </form>
-          <Link href="/cadastro" className="text-center block mt-2 underline underline-offset-2">
+          <Link
+            href="/cadastro"
+            className="text-center block mt-2 underline underline-offset-2"
+          >
             Cadastrar
           </Link>
         </div>
