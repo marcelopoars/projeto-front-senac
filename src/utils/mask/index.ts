@@ -1,2 +1,2 @@
+export * from "./normalize-cpf-or-cnpj ";
 export * from "./normalize-phone-number";
-export * from "./normalize-cpf";

@@ -2,26 +2,26 @@
 
 import { useState } from "react";
 
-import { normalizeCpf, normalizePhoneNumber } from "@/utils";
+import { normalizeCpfOrCnpj, normalizePhoneNumber } from "@/utils";
 
 export function SignUpForm() {
   const [cpf, setCpf] = useState("");
   const [phone, setPhone] = useState("");
-
-  const handleCpfChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const formattedCpf = normalizeCpf(event.target.value);
-    setCpf(formattedCpf);
-  };
 
   const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const formattedPhone = normalizePhoneNumber(event.target.value);
     setPhone(formattedPhone);
   };
 
+  const handleCpfChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const formattedCpf = normalizeCpfOrCnpj(event.target.value);
+    setCpf(formattedCpf);
+  };
+
   return (
     <form className="flex gap-5 flex-col max-w-[400px]">
       <input
-        className=  "border p-3 rounded-lg"
+        className="border p-3 rounded-lg"
         type="text"
         placeholder="Nome"
         autoComplete="name"
@@ -35,23 +35,15 @@ export function SignUpForm() {
       <input
         className="border p-3 rounded-lg"
         type="tel"
-        placeholder="Telefone"
+        placeholder="Telefone / WhatsApp"
         autoComplete="phone"
         value={phone}
         onChange={handlePhoneChange}
       />
-      <select
-        id="type-person"
-        className="cursor-pointer border py-2 px-3 hover:bg-zinc-100/80 text-base"
-        name="type-person"
-      >
-        <option value="fisica">Pessoa Física</option>
-        <option value="juridica">Pessoa Jurídica</option>
-      </select>
       <input
         className="border p-3 rounded-lg"
         type="text"
-        placeholder="CPF"
+        placeholder="CPF ou CNPJ"
         autoComplete="off"
         value={cpf}
         onChange={handleCpfChange}
