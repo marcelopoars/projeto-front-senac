@@ -7,12 +7,33 @@ import { Schedule } from "./components";
 
 export default function AgendaPage() {
   const [show, setShow] = useState("customer");
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+
+  const fetchAppointment = async () => {
+    if (selectedDate && selectedTime) {
+      try {
+        
+        const formattedDate = selectedDate.toISOString().split("T")[0]; // "YYYY-MM-DD"
+        const response = await axios.get(`/api/appointments`, {
+          params: {
+            date: formattedDate,
+            time: selectedTime,
+          },
+        });
+        setAppointment(response.data); 
+      } catch (error) {
+        console.error("Erro ao buscar o agendamento:", error);
+      }
+    }
+  };
+
   return (
     <div className="flex flex-col items-center  mt-20">
       <div className="flex">
         <div className="flex flex-col">
-          <Calendar />
-          <TimeStamps />
+          <Calendar onDateSelect={setSelectedDate} />
+          <TimeStamps onTimeSelect={setSelectedTime} />
         </div>
         {show === "customer" && <Customer setShow={setShow} />}
 
