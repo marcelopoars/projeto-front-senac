@@ -1,12 +1,13 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { z } from "zod";
 
 import { ErrorMessage } from "@/components";
 import { normalizeCpfOrCnpj, normalizePhoneNumber } from "@/utils";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { z } from "zod";
 
 const signUpFormSchema = z.object({
   name: z.string().min(1, { message: "Por favor, insira o seu nome." }),
@@ -37,15 +38,22 @@ const signUpFormSchema = z.object({
   description: z
     .string()
     .min(1, { message: "Descreva seus serviços para completar o cadastro." }),
+  password: z.string().min(1, { message: "Por favor, insira sua senha." }),
+  confirmPassword: z
+    .string()
+    .min(1, { message: "Por favor, insira a confirmação da senha." }),
 });
 
 type SignUpFormInputs = z.infer<typeof signUpFormSchema>;
 export function FormSignUp() {
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
     watch,
     setValue,
+    setError,
     formState: { errors, isValid },
   } = useForm<SignUpFormInputs>({
     mode: "onTouched",
@@ -57,10 +65,20 @@ export function FormSignUp() {
       cpfOrCnpj: "",
       category: "",
       description: "",
+      password: "",
+      confirmPassword: "",
     },
   });
 
   const onSubmitForm: SubmitHandler<SignUpFormInputs> = (data) => {
+    if (password !== confirmPassword) {
+      setError("confirmPassword", {
+        type: "manual",
+        message: "As senhas não coincidem.",
+      });
+      return;
+    }
+
     const cleanedPhone = data.phone.replace(/\D/g, "");
     const cleanedCpfOrCnpj = data.cpfOrCnpj.replace(/\D/g, "");
 
@@ -71,10 +89,11 @@ export function FormSignUp() {
     };
 
     console.log(cleanedData);
+    router.push("/prestador");
   };
 
   const data = watch();
-  const { phone, cpfOrCnpj } = data;
+  const { phone, cpfOrCnpj, password, confirmPassword } = data;
 
   useEffect(() => {
     if (phone) setValue("phone", normalizePhoneNumber(phone));
@@ -102,6 +121,7 @@ export function FormSignUp() {
         />
         <ErrorMessage error={errors.name?.message} />
       </div>
+
       <div className="flex flex-col pb-8">
         <label htmlFor="email" className="sr-only">
           Email
@@ -137,6 +157,7 @@ export function FormSignUp() {
         />
         <ErrorMessage error={errors.phone?.message} />
       </div>
+
       <div className="flex flex-col pb-8">
         <label htmlFor="cpfOrCnpj" className="sr-only">
           CPF ou CNPJ
@@ -154,6 +175,7 @@ export function FormSignUp() {
         />
         <ErrorMessage error={errors.cpfOrCnpj?.message} />
       </div>
+
       <div className="flex flex-col gap-2 pb-8">
         <label htmlFor="category" className="sr-only">
           Categoria
@@ -178,6 +200,7 @@ export function FormSignUp() {
         </select>
         <ErrorMessage error={errors.category?.message} />
       </div>
+
       <div className="flex flex-col pb-8">
         <label htmlFor="description" className="sr-only">
           Descrição do serviço
@@ -193,6 +216,51 @@ export function FormSignUp() {
         />
         <ErrorMessage error={errors.description?.message} />
       </div>
+
+      <div className="flex flex-col pb-8">
+        <label htmlFor="password" className="sr-only">
+          Senha
+        </label>
+        <input
+          className={`border p-3 rounded-lg ${
+            errors.password ? "border-red-500" : ""
+          }`}
+          id="password"
+          type="password"
+          placeholder="Senha"
+          autoComplete="current-password"
+          aria-invalid={errors.password?.message ? "true" : "false"}
+          aria-describedby={
+            errors.password?.message ? "password-error" : undefined
+          }
+          {...register("password")}
+        />
+        <ErrorMessage error={errors.password?.message} />
+      </div>
+
+      <div className="flex flex-col pb-8">
+        <label htmlFor="confirmPassword" className="sr-only">
+          Confirmar senha
+        </label>
+        <input
+          className={`border p-3 rounded-lg ${
+            errors.confirmPassword ? "border-red-500" : ""
+          }`}
+          id="confirmPassword"
+          type="password"
+          placeholder="Confirmar senha"
+          autoComplete="current-confirmPassword"
+          aria-invalid={errors.confirmPassword?.message ? "true" : "false"}
+          aria-describedby={
+            errors.confirmPassword?.message
+              ? "confirmPassword-error"
+              : undefined
+          }
+          {...register("confirmPassword")}
+        />
+        <ErrorMessage error={errors.confirmPassword?.message} />
+      </div>
+
       <button
         type="submit"
         className="bg-sky-500 p-3 rounded-lg text-center font-semibold disabled:bg-slate-300"
