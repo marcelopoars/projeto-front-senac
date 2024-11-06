@@ -4,6 +4,7 @@ import { Calendar } from "./components";
 import { Customer } from "./components";
 import { TimeStamps } from "./components";
 import { Schedule } from "./components";
+import axios from "axios";
 
 export default function AgendaPage() {
   const [show, setShow] = useState("customer");
