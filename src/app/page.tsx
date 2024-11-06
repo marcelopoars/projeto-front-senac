@@ -1,6 +1,6 @@
 import { categories } from "@/api";
 
-import { CardCategory } from "./components";
+import { CardCategory } from "../components";
 
 export default function Home() {
   return (

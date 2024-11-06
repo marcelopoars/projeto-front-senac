@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 
 import "./globals.css";
-import { Footer, Header } from "./components";
+import { Footer, Header } from "../components";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -18,7 +18,7 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   generator: "Next.js",
   title: {
-    template: "Agendar | %s",
+    template: "%s | Agendar",
     default: "Agendar",
   },
   description: "Encontre um profisional e agende um serviço.",
