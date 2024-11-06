@@ -1,6 +1,11 @@
 import { useState } from "react";
+import { twMerge } from "tailwind-merge";
 
-export function TimeStamps({ onTimeSelect }: { onTimeSelect: (time: string) => void }) {
+export function TimeStamps({
+  onTimeSelect,
+}: {
+  onTimeSelect: (time: string) => void;
+}) {
   const hours = [
     "08:00",
     "09:00",
@@ -18,18 +23,19 @@ export function TimeStamps({ onTimeSelect }: { onTimeSelect: (time: string) => v
 
   const handleTimeClick = (time: string) => {
     setSelectedTime(time);
-    onTimeSelect(time); 
+    onTimeSelect(time);
   };
 
   return (
-    <div className="grid grid-cols-5 gap-2 w-full p-3 bg-zinc-200">
-      {hours.map((hour, index) => (
+    <div className="flex-1 grid grid-cols-5 gap-3">
+      {hours.map((hour) => (
         <div
-          key={index}
+          key={hour}
           onClick={() => handleTimeClick(hour)}
-          className={`text-center bg-zinc-300 text-black font-bold py-2 rounded-lg hover:bg-zinc-500 cursor-pointer ${
-            selectedTime === hour ? "bg-blue-500 text-white" : ""
-          }`}
+          className={twMerge(
+            "flex items-center justify-center bg-sky-100 font-bold text-sky-800 rounded-lg hover:bg-sky-200 cursor-pointer transition",
+            selectedTime === hour ? "bg-sky-200 text-zinc-900" : ""
+          )}
         >
           {hour}
         </div>

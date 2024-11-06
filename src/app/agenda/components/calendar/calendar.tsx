@@ -1,8 +1,13 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import ReactCalendar from "react-calendar";
+
 import "./styles.css";
 
-export function Calendar({ onDateSelect }: { onDateSelect: (date: Date) => void }) {
+export function Calendar({
+  onDateSelect,
+}: {
+  onDateSelect: (date: Date) => void;
+}) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const handleDateChange = (date: Date) => {
@@ -11,7 +16,7 @@ export function Calendar({ onDateSelect }: { onDateSelect: (date: Date) => void 
   };
 
   return (
-    <div suppressHydrationWarning>
+    <div suppressHydrationWarning className="flex-1">
       <ReactCalendar
         locale="pt-BR"
         onClickDay={handleDateChange}
