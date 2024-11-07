@@ -12,7 +12,7 @@ import { Appointment, AppointmentResponse } from "./interfaces";
 
 export function MySchedule() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  // const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [appointment, setAppointment] = useState<Appointment | null>(null);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -26,7 +26,7 @@ export function MySchedule() {
 
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
-    setSelectedTime(null);
+    // setSelectedTime(null);
     setAppointment(null);
   };
 
@@ -55,7 +55,7 @@ export function MySchedule() {
   }, [selectedDate]);
 
   const handleTimeSelect = (time: string) => {
-    setSelectedTime(time);
+    // setSelectedTime(time);
     setAppointment(null);
 
     if (appointments.length > 0) {
