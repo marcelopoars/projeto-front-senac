@@ -1,49 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { api } from "@/lib";
 import { Calendar } from "../calendar";
 import { TimeStamps } from "../timestamps";
-
-interface Appointment {
-  agendamento: {
-    id: number;
-    data_agendamento: string;
-    hora_inicio: string;
-    hora_fim: string;
-    assunto: string;
-    status: string;
-    criado_em: string;
-    atualizado_em: string;
-  };
-  cliente: {
-    id: number;
-    nome: string;
-    email: string;
-    telefone: string;
-  };
-  prestador: {
-    id: number;
-    nome: string;
-    email: string;
-    telefone: string;
-    cpf_cnpj: string;
-    atividade: string;
-    services: string;
-    instagram: string;
-    website: string;
-  };
-}
-
-interface AppointmentResponse {
-  message: string;
-  count: number;
-  totalRegistros: number;
-  totalPaginas: number;
-  currentPage: number;
-  agendamentos: Appointment[];
-}
+import { useFormattedDate } from "@/hooks";
+import { Appointment, AppointmentResponse } from "./interfaces";
 
 export function MySchedule() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -51,6 +14,8 @@ export function MySchedule() {
   const [appointment, setAppointment] = useState<Appointment | null>(null);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+
+  const { toLongDate, toISO } = useFormattedDate();
 
   useEffect(() => {
     const today = new Date();
@@ -60,13 +25,15 @@ export function MySchedule() {
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
     setSelectedTime(null);
+    setAppointment(null);
   };
 
   useEffect(() => {
     const fetchAppointments = async () => {
       if (selectedDate) {
-        const formattedDate = selectedDate.toISOString().split("T")[0]; // Formata a data como "YYYY-MM-DD"
+        const formattedDate = toISO(selectedDate); // Formata a data como "YYYY-MM-DD"
         setLoading(true);
+
         try {
           const response = await api.get<AppointmentResponse>(
             `/gestao/api/management/agendamentos/62/${formattedDate}/${formattedDate}`
@@ -84,8 +51,10 @@ export function MySchedule() {
     fetchAppointments();
   }, [selectedDate]);
 
-  const handleTimeSelect = async (time: string) => {
+  const handleTimeSelect = (time: string) => {
     setSelectedTime(time);
+    setAppointment(null);
+
     if (appointments.length > 0) {
       const matchingAppointment = appointments.find(
         (appointment) =>
@@ -94,24 +63,34 @@ export function MySchedule() {
             selectedDate?.toISOString().split("T")[0] || ""
           )
       );
+
       setAppointment(matchingAppointment || null);
     }
   };
 
-  const mappedAppointments = appointments.map((appointment) => ({
-    hora_inicio: appointment.agendamento.hora_inicio,
-    cliente: {
-      nome: appointment.cliente.nome,
-      data_agendamento: appointment.agendamento.data_agendamento,
-    },
-  }));
+  const mappedAppointments = useMemo(
+    () =>
+      appointments.map((appointment) => ({
+        hora_inicio: appointment.agendamento.hora_inicio,
+        cliente: {
+          nome: appointment.cliente.nome,
+          data_agendamento: appointment.agendamento.data_agendamento,
+        },
+      })),
+    [appointments]
+  );
 
   return (
     <section className="h-full">
       <div className="container px-6 py-12">
-        <h1 className="font-bold text-2xl md:text-3xl mb-8 text-zinc-700">
-          Minha agenda
-        </h1>
+        <div className="flex items-center justify-between">
+          <h1 className="font-bold text-2xl md:text-3xl mb-8 text-zinc-700">
+            Minha agenda
+          </h1>
+          {loading && (
+            <span className="text-zinc-600 animate-pulse">Carregando...</span>
+          )}
+        </div>
 
         <div className="flex gap-8">
           <Calendar onDateSelect={handleDateSelect} />
@@ -122,27 +101,29 @@ export function MySchedule() {
           />
         </div>
 
-        {loading && <div>Carregando...</div>}
-
-        {appointments.length === 0 && !loading && (
-          <div className="mt-8 p-4 bg-gray-100 rounded-md">
-            <p>Nenhum agendamento encontrado para este dia.</p>
+        {appointment && (
+          <div className="flex flex-col mt-8 py-8 px-6 bg-zinc-100 rounded-md">
+            <h2 className="font-semibold text-lg mb-4">
+              Detalhes do Agendamento:
+            </h2>
+            <p>
+              <strong>Data:</strong>{" "}
+              {toLongDate(appointment.agendamento.data_agendamento)}
+            </p>
+            <p>
+              <strong>Horário:</strong>{" "}
+              {appointment.agendamento.hora_inicio
+                .split(":")
+                .slice(0, 2)
+                .join(":")}
+            </p>
+            <p>
+              <strong>Cliente:</strong> {appointment.cliente.nome}
+            </p>
+            <p>
+              <strong>Telefone:</strong> {appointment.cliente.telefone}
+            </p>
           </div>
-        )}
-
-        {appointment ? (
-          <div className="mt-8 p-4 bg-gray-100 rounded-md">
-            <h2 className="font-semibold text-lg">Detalhes do Agendamento:</h2>
-            <p>Cliente: {appointment.cliente.nome}</p>
-            <p>Horário: {appointment.agendamento.hora_inicio}</p>
-            <p>Telefone: {appointment.cliente.telefone}</p>
-          </div>
-        ) : (
-          selectedTime && (
-            <div className="mt-8 p-4 bg-gray-100 rounded-md">
-              <p>Nenhum agendamento encontrado para este horário.</p>
-            </div>
-          )
         )}
       </div>
     </section>

@@ -62,13 +62,21 @@ export function TimeStamps({
           key={hour}
           onClick={() => handleTimeClick(hour)}
           className={twMerge(
-            "flex items-center bg-green-200 font-bold text-sky-800 px-5 rounded-lg hover:bg-green-300 transition",
-            client !== "Livre"
-              ? "bg-zinc-200 text-zinc-500 hover:bg-zinc-300 focus-visible:border"
-              : ""
+            "flex items-center justify-center  bg-green-200 text-sky-800 px-5 rounded-lg hover:bg-green-300 transition lg: gap-2 lg:justify-start",
+            client === "Livre"
+              ? ""
+              : "bg-sky-200 hover:bg-sky-300 focus-visible:border"
           )}
+          title={
+            client === "Livre"
+              ? "Ciique para agendar"
+              : "Ver detalhes do agendamento"
+          }
         >
-          {hour.split(":").slice(0, 2).join(":")} - {client}
+          <span className="font-bold">
+            {hour.split(":").slice(0, 2).join(":")}
+          </span>
+          <span className="hidden lg:block">- {client}</span>
         </button>
       ))}
     </div>
