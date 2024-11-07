@@ -1,42 +1,83 @@
+import { useFormat } from "@/hooks";
 import { twMerge } from "tailwind-merge";
 
 interface TimeStampsProps {
   onTimeSelect: (time: string) => void;
+  selectedDate: Date | null;
+  appointments: {
+    hora_inicio: string;
+    cliente: { nome: string; data_agendamento: string };
+  }[];
 }
 
-export function TimeStamps({ onTimeSelect }: TimeStampsProps) {
+export function TimeStamps({
+  onTimeSelect,
+  selectedDate,
+  appointments,
+}: TimeStampsProps) {
+  const { formatHour } = useFormat();
+
   const hours = [
-    { hour: "08:00", client: "Fulano" },
-    { hour: "09:00", client: "" },
-    { hour: "10:00", client: "Antonio Camargo" },
-    { hour: "11:00", client: "José Daniel" },
-    { hour: "12:00", client: "" },
-    { hour: "13:00", client: "Maria da Silva" },
-    { hour: "14:00", client: "Camila Santos" },
-    { hour: "15:00", client: "Miguel Luiz" },
-    { hour: "16:00", client: "" },
-    { hour: "17:00", client: "Pedrinho" },
+    "08:00:00",
+    "09:00:00",
+    "10:00:00",
+    "11:00:00",
+    "12:00:00",
+    "13:00:00",
+    "14:00:00",
+    "15:00:00",
+    "16:00:00",
+    "17:00:00",
   ];
 
+  const updatedHours = hours.map((hour) => {
+    const appointment = appointments.find(
+      (appointment) =>
+        appointment.hora_inicio === hour &&
+        selectedDate?.toISOString().split("T")[0] ===
+          new Date(appointment.cliente.data_agendamento)
+            .toISOString()
+            .split("T")[0]
+    );
+
+    return {
+      hour,
+      client: appointment ? appointment.cliente.nome : "Livre",
+    };
+  });
+
   const handleTimeClick = (time: string) => {
-    console.log(time);
-    onTimeSelect(time);
+    if (selectedDate) {
+      onTimeSelect(time);
+      console.log("Data selecionada:", selectedDate);
+      console.log("Horário selecionado:", time);
+    } else {
+      console.log(
+        "Por favor, selecione uma data antes de escolher um horário."
+      );
+    }
   };
 
   return (
     <div className="flex-1 grid grid-cols-2 gap-3">
-      {hours.map(({ hour, client }) => (
+      {updatedHours.map(({ hour, client }) => (
         <button
           key={hour}
           onClick={() => handleTimeClick(hour)}
           className={twMerge(
-            "flex items-center bg-green-200 font-bold text-sky-800 px-5 rounded-lg hover:bg-green-300 transition",
-            client
-              ? "bg-zinc-200 text-zinc-500 hover:bg-zinc-300 focus-visible:border"
-              : ""
+            "flex items-center justify-center  bg-green-200 text-sky-800 px-5 rounded-lg hover:bg-green-300 transition lg: gap-2 lg:justify-start",
+            client === "Livre"
+              ? ""
+              : "bg-sky-200 hover:bg-sky-300 focus-visible:border"
           )}
+          title={
+            client === "Livre"
+              ? "Ciique para agendar"
+              : "Ver detalhes do agendamento"
+          }
         >
-          {hour} - {client || 'Livre'}
+          <span className="font-bold">{formatHour(hour)}</span>
+          <span className="hidden lg:block">- {client}</span>
         </button>
       ))}
     </div>

@@ -39,14 +39,6 @@ export function AppointmentForm() {
             required
           />
         </div>
-        <div>
-          <textarea
-            className="w-full py-2 px-4"
-            placeholder="Observações"
-            id="obs"
-            required
-          />
-        </div>
         <button
           className="bg-sky-500 p-3 rounded-lg text-center font-semibold hover:bg-sky-600"
           type="button"

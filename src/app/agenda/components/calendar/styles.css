@@ -1,6 +1,6 @@
 .react-calendar {
   background-color: #e0f2fe;
-  padding: 32px;
+  padding: 24px;
 }
 
 .react-calendar__month-view__weekdays__weekday {
@@ -20,7 +20,7 @@
   height: 48px;
   box-sizing: border-box;
   --tw-text-opacity: 1;
-  color: rgb(7 89 133 / var(--tw-text-opacity))
+  color: rgb(7 89 133 / var(--tw-text-opacity));
 }
 
 .react-calendar__tile:not(
@@ -41,7 +41,7 @@
   --tw-bg-opacity: 1;
   background-color: #bae6fd;
   --tw-text-opacity: 1;
-  color: rgb(24 24 27 / var(--tw-text-opacity))
+  color: rgb(24 24 27 / var(--tw-text-opacity));
 }
 
 .react-calendar__navigation {

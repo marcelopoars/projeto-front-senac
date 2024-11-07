@@ -8,16 +8,16 @@ interface CalendarProps {
 }
 
 export function Calendar({ onDateSelect }: CalendarProps) {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   const handleDateChange = (date: Date) => {
-    console.log(date);
+    console.log(selectedDate);
     setSelectedDate(date);
     onDateSelect(date);
   };
 
   return (
-    <div suppressHydrationWarning className="flex-1">
+    <div className="flex-1">
       <ReactCalendar
         locale="pt-BR"
         onClickDay={handleDateChange}
