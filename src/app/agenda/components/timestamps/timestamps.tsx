@@ -1,26 +1,43 @@
-export function TimeStamps() {
+import { twMerge } from "tailwind-merge";
+
+interface TimeStampsProps {
+  onTimeSelect: (time: string) => void;
+}
+
+export function TimeStamps({ onTimeSelect }: TimeStampsProps) {
   const hours = [
-    "08:00",
-    "09:00",
-    "10:00",
-    "11:00",
-    "12:00",
-    "13:00",
-    "14:00",
-    "15:00",
-    "16:00",
-    "17:00",
+    { hour: "08:00", status: "free" },
+    { hour: "09:00", status: "free" },
+    { hour: "10:00", status: "busy" },
+    { hour: "11:00", status: "free" },
+    { hour: "12:00", status: "busy" },
+    { hour: "13:00", status: "busy" },
+    { hour: "14:00", status: "busy" },
+    { hour: "15:00", status: "free" },
+    { hour: "16:00", status: "free" },
+    { hour: "17:00", status: "busy" },
   ];
 
+  const handleTimeClick = (time: string) => {
+    console.log(time);
+    onTimeSelect(time);
+  };
+
   return (
-    <div className="grid grid-cols-5 gap-2 w-full p-3 bg-zinc-200">
-      {hours.map((hour, index) => (
-        <div
-          key={index}
-          className="text-center bg-zinc-300 text-black font-bold py-2 rounded-lg hover:bg-zinc-500 cursor-pointer"
+    <div className="flex-1 grid grid-cols-2 gap-3">
+      {hours.map(({ hour, status }) => (
+        <button
+          key={hour}
+          onClick={() => handleTimeClick(hour)}
+          className={twMerge(
+            "flex items-center justify-center bg-green-200 font-bold text-sky-800 rounded-lg hover:bg-green-300 transition",
+            status === "busy"
+              ? "bg-zinc-200 text-zinc-500 hover:bg-zinc-300 focus-visible:border"
+              : ""
+          )}
         >
           {hour}
-        </div>
+        </button>
       ))}
     </div>
   );

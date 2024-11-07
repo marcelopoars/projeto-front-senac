@@ -1,23 +1,11 @@
-"use client";
-import { useState } from "react";
-import { Calendar } from "./components";
-import { Customer } from "./components";
-import { TimeStamps } from "./components";
-import { Schedule } from "./components";
+import { Metadata } from "next";
+import { MySchedule } from "./components";
+
+export const metadata: Metadata = {
+  title: "Minha Agenda",
+  description: "Aqui você faz a gestão de todos os seus agendamentos.",
+};
 
 export default function AgendaPage() {
-  const [show, setShow] = useState("customer");
-  return (
-    <div className="flex flex-col items-center  mt-20">
-      <div className="flex">
-        <div className="flex flex-col">
-          <Calendar />
-          <TimeStamps />
-        </div>
-        {show === "customer" && <Customer setShow={setShow} />}
-
-        {show === "schedule" && <Schedule setShow={setShow} />}
-      </div>
-    </div>
-  );
+  return <MySchedule />;
 }

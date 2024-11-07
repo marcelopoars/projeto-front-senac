@@ -1,5 +1,12 @@
+import { Metadata } from "next";
 import Link from "next/link";
+
 import { FormLogin } from "./components";
+
+export const metadata: Metadata = {
+  title: "Login",
+  description: "Entre com email e senha para acessar o sistema.",
+};
 
 export default function LoginPage() {
   return (

@@ -1,4 +1,11 @@
+import { Metadata } from "next";
 import { FormSignUp } from "./components";
+
+export const metadata: Metadata = {
+  title: "Cadastro",
+  description:
+    "Preencha o formulário para efetuar o seu cadastro no sistema.",
+};
 
 export default function SignUpPage() {
   return (
