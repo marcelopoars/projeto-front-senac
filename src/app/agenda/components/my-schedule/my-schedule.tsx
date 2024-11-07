@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+// import { useState } from "react";
 
 import { Calendar } from "../calendar";
 import { TimeStamps } from "../timestamps";
 
 export function MySchedule() {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  // const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  // const [selectedTime, setSelectedTime] = useState<string | null>(null);
 
   // const fetchAppointment = async () => {
   //   if (selectedDate && selectedTime) {
@@ -35,8 +35,8 @@ export function MySchedule() {
         <h1 className="font-bold text-2xl md:text-3xl mb-8 text-zinc-700">Minha agenda</h1>
 
         <div className="flex gap-8">
-          <Calendar onDateSelect={setSelectedDate} />
-          <TimeStamps onTimeSelect={setSelectedTime} />
+          <Calendar onDateSelect={() => null} />
+          <TimeStamps onTimeSelect={() => null} />
         </div>
       </div>
     </section>
