@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 
-export function TimeStamps({
-  onTimeSelect,
-}: {
+interface TimeStampsProps {
   onTimeSelect: (time: string) => void;
-}) {
+}
+
+export function TimeStamps({ onTimeSelect }: TimeStampsProps) {
   const hours = [
     "08:00",
     "09:00",
@@ -22,12 +22,13 @@ export function TimeStamps({
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
 
   const handleTimeClick = (time: string) => {
+    console.log(time);
     setSelectedTime(time);
     onTimeSelect(time);
   };
 
   return (
-    <div className="flex-1 grid grid-cols-5 gap-3">
+    <div className="flex-1 grid grid-cols-2 gap-3">
       {hours.map((hour) => (
         <div
           key={hour}

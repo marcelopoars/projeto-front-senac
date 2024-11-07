@@ -3,14 +3,15 @@ import ReactCalendar from "react-calendar";
 
 import "./styles.css";
 
-export function Calendar({
-  onDateSelect,
-}: {
+interface CalendarProps {
   onDateSelect: (date: Date) => void;
-}) {
+}
+
+export function Calendar({ onDateSelect }: CalendarProps) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   const handleDateChange = (date: Date) => {
+    console.log(date);
     setSelectedDate(date);
     onDateSelect(date);
   };
