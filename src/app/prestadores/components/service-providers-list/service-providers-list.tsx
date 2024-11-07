@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 
 import { ServiceProvidersCard } from "../service-providers-card";
 import { CategoryFilter } from "../category-filter";
-import { serviceProviders } from "@/api";
+import { serviceProviders } from "@/lib";
 
 export function ServiceProvidersList() {
   const defaultCategory = "Automotivo";

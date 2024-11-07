@@ -1,4 +1,4 @@
-import { categories } from "@/api";
+import { categories } from "@/lib";
 
 import { CardCategory } from "../components";
 
