@@ -1,3 +1,4 @@
+import { useFormat } from "@/hooks";
 import { twMerge } from "tailwind-merge";
 
 interface TimeStampsProps {
@@ -14,6 +15,8 @@ export function TimeStamps({
   selectedDate,
   appointments,
 }: TimeStampsProps) {
+  const { formatHour } = useFormat();
+
   const hours = [
     "08:00:00",
     "09:00:00",
@@ -73,9 +76,7 @@ export function TimeStamps({
               : "Ver detalhes do agendamento"
           }
         >
-          <span className="font-bold">
-            {hour.split(":").slice(0, 2).join(":")}
-          </span>
+          <span className="font-bold">{formatHour(hour)}</span>
           <span className="hidden lg:block">- {client}</span>
         </button>
       ))}

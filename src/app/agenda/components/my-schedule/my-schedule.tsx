@@ -1,13 +1,13 @@
 "use client";
 
 import { useFormat } from "@/hooks";
-import { WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { api } from "@/lib";
 import { Calendar } from "../calendar";
 import { TimeStamps } from "../timestamps";
 
+import { AppointmentDetails } from "../appointment-details";
 import { Appointment, AppointmentResponse } from "./interfaces";
 
 export function MySchedule() {
@@ -17,7 +17,7 @@ export function MySchedule() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const { toLongDate, toISO, formatHour } = useFormat();
+  const { toISO } = useFormat();
 
   useEffect(() => {
     const today = new Date();
@@ -83,21 +83,6 @@ export function MySchedule() {
     [appointments]
   );
 
-  const whatsAppUrl = useCallback(
-    (name: string, date: string, hour: string) => {
-      const phoneNumber = "5551981838118";
-
-      const message = encodeURIComponent(
-        `Olá ${name}! \n\nGostaria de confirmar o seu agendamento para o dia ${toLongDate(
-          date
-        )} às ${hour}. \n\nPosso confirmar? \n1 - Sim \n2 - Não`
-      );
-
-      return `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${message}`;
-    },
-    [toLongDate]
-  );
-
   return (
     <section className="h-full">
       <div className="container px-6 py-12">
@@ -119,45 +104,7 @@ export function MySchedule() {
           />
         </div>
 
-        {appointment && (
-          <div className="flex flex-col mt-4 py-8 px-6 bg-zinc-100/85 rounded-md">
-            <div className="flex justify-between mb-4">
-              <h2 className="font-semibold text-lg">
-                Detalhes do Agendamento:
-              </h2>
-
-              <a
-                className="flex items-center justify-center gap-2 bg-green-500 font-semibold py-2 px-4 rounded-full hover:bg-green-700 hover:text-white transition"
-                href={whatsAppUrl(
-                  appointment.cliente.nome,
-                  appointment.agendamento.data_agendamento,
-                  formatHour(appointment.agendamento.hora_inicio)
-                )}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {<WhatsappLogo className="size-6" />} WhatsApp
-              </a>
-            </div>
-
-            <div className="space-y-2">
-              <p>
-                <strong>Data:</strong>{" "}
-                {toLongDate(appointment.agendamento.data_agendamento)}
-              </p>
-              <p>
-                <strong>Horário:</strong>{" "}
-                {formatHour(appointment.agendamento.hora_inicio)}
-              </p>
-              <p>
-                <strong>Cliente:</strong> {appointment.cliente.nome}
-              </p>
-              <p>
-                <strong>Telefone:</strong> {appointment.cliente.telefone}
-              </p>
-            </div>
-          </div>
-        )}
+        {appointment && <AppointmentDetails appointment={appointment} />}
       </div>
     </section>
   );
