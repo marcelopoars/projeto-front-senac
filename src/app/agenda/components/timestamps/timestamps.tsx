@@ -31,10 +31,7 @@ export function TimeStamps({
 }: TimeStampsProps) {
   const { formatHour } = useFormat();
 
-  useEffect(() => {
-    console.log("Agendamentos carregados:", appointments);
-    console.log("Data selecionada:", selectedDate);
-  }, [appointments, selectedDate]);
+  useEffect(() => {}, [appointments, selectedDate]);
 
   const updatedHours = hours.map((hour) => {
     const appointment = appointments.find(

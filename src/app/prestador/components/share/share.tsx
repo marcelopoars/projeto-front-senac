@@ -24,7 +24,6 @@ export function Share() {
     if (navigator.canShare(shareData)) {
       try {
         navigator.share(shareData);
-        console.log(fullUrl);
       } catch (error) {
         console.error("Error sharing the post:", error);
       }

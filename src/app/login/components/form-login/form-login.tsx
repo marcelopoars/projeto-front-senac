@@ -33,7 +33,6 @@ export function FormLogin() {
   });
 
   const onSubmitForm: SubmitHandler<FormInputs> = (data) => {
-    console.log(data, errors.email?.message);
     router.push("/agenda");
   };
 

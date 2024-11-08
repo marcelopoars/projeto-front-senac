@@ -31,7 +31,6 @@ export function MySchedule() {
         `/gestao/api/management/agendamentos/62/${formattedDate}/${formattedDate}`
       );
       setAppointments(response.data.agendamentos);
-      console.log("Agendamentos carregados:", response.data.agendamentos);
     } catch (error) {
       console.error("Erro ao buscar os agendamentos:", error);
     } finally {

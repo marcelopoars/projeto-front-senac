@@ -89,7 +89,6 @@ export function FormSignUp() {
       cpfOrCnpj: cleanedCpfOrCnpj,
     };
 
-    console.log(cleanedData);
     router.push("/prestador");
   };
 
