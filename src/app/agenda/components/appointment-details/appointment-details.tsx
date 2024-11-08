@@ -29,7 +29,7 @@ export function AppointmentDetails({
   );
   
   return (
-    <div className="flex flex-col mt-4 py-8 px-6 bg-zinc-100/85 rounded-md">
+    <div className="flex flex-col mt-4 py-8 px-6 bg-zinc-100 rounded-md">
       <div className="flex justify-between mb-4">
         <h2 className="font-semibold text-lg">Detalhes do Agendamento:</h2>
 
