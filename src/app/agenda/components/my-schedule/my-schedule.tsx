@@ -31,7 +31,6 @@ export function MySchedule() {
         `/gestao/api/management/agendamentos/62/${formattedDate}/${formattedDate}`
       );
       setAppointments(response.data.agendamentos);
-      console.log("Agendamentos carregados:", response.data.agendamentos);
     } catch (error) {
       console.error("Erro ao buscar os agendamentos:", error);
     } finally {
@@ -43,7 +42,7 @@ export function MySchedule() {
     if (selectedDate) {
       fetchAppointments(selectedDate);
     }
-  }, [selectedDate]);
+  }, [selectedDate, fetchAppointments]);
 
   useEffect(() => {
     const today = new Date();
@@ -101,7 +100,7 @@ export function MySchedule() {
         <div className="flex gap-8">
           <Calendar onDateSelect={handleDateSelect} />
 
-          {showForm ? (
+          {showForm && !appointment ? (
             <AppointmentForm
               selectedDate={selectedDate}
               selectedTime={selectedTime}

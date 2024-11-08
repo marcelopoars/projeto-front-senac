@@ -90,11 +90,12 @@ export function FormSignUp() {
     };
 
     console.log(cleanedData);
+
     router.push("/prestador");
   };
 
   const data = watch();
-  
+
   const { phone, cpfOrCnpj, password, confirmPassword } = data;
 
   useEffect(() => {

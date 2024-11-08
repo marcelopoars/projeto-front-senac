@@ -1,4 +1,5 @@
 import { useFormat } from "@/hooks";
+import { isBefore, startOfDay } from "date-fns";
 import { useEffect } from "react";
 import { twMerge } from "tailwind-merge";
 
@@ -31,10 +32,7 @@ export function TimeStamps({
 }: TimeStampsProps) {
   const { formatHour } = useFormat();
 
-  useEffect(() => {
-    console.log("Agendamentos carregados:", appointments);
-    console.log("Data selecionada:", selectedDate);
-  }, [appointments, selectedDate]);
+  useEffect(() => {}, [appointments, selectedDate]);
 
   const updatedHours = hours.map((hour) => {
     const appointment = appointments.find(
@@ -62,6 +60,10 @@ export function TimeStamps({
     }
   };
 
+  const isPastDate = selectedDate
+    ? isBefore(selectedDate, startOfDay(new Date()))
+    : false;
+
   return (
     <div className="flex-1 grid grid-cols-2 gap-3">
       {updatedHours.map(({ hour, client }) => (
@@ -69,7 +71,7 @@ export function TimeStamps({
           key={hour}
           onClick={() => handleTimeClick(hour)}
           className={twMerge(
-            "flex items-center justify-center  bg-green-200 text-sky-800 px-5 rounded-lg hover:bg-green-300 transition lg: gap-2 lg:justify-start",
+            "flex items-center justify-center  bg-green-200 text-sky-800 px-5 rounded-lg hover:bg-green-300 transition lg: gap-2 lg:justify-start disabled:text-zinc-400 disabled:bg-zinc-100",
             client === "Livre"
               ? ""
               : "bg-sky-200 hover:bg-sky-300 focus-visible:border"
@@ -79,9 +81,12 @@ export function TimeStamps({
               ? "Ciique para agendar"
               : "Ver detalhes do agendamento"
           }
+          disabled={isPastDate && client === "Livre"}
         >
           <span className="font-bold">{formatHour(hour)}</span>
-          <span className="hidden lg:block">- {client}</span>
+          <span className="hidden lg:block">
+            - {isPastDate && client === "Livre" ? "" : client}
+          </span>
         </button>
       ))}
     </div>

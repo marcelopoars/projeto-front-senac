@@ -11,7 +11,6 @@ export function Calendar({ onDateSelect }: CalendarProps) {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   const handleDateChange = (date: Date) => {
-    console.log(selectedDate);
     setSelectedDate(date);
     onDateSelect(date);
   };
