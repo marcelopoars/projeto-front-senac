@@ -8,6 +8,13 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { ErrorMessage } from "@/components";
+import { useFormat } from "@/hooks";
+
+interface AppointmentFormProps {
+  selectedDate: Date | null;
+  selectedTime: string | null;
+  onBack: () => void;
+}
 
 const appointmentFormSchema = z.object({
   name: z.string().min(1, { message: "Por favor, insira o seu nome." }),
@@ -18,7 +25,13 @@ const appointmentFormSchema = z.object({
 
 type AppointmentFormInputs = z.infer<typeof appointmentFormSchema>;
 
-export function AppointmentForm() {
+export function AppointmentForm({
+  selectedDate,
+  selectedTime,
+  onBack,
+}: AppointmentFormProps) {
+  const { toLongDate, formatHour } = useFormat();
+
   const {
     register,
     handleSubmit,
@@ -54,11 +67,12 @@ export function AppointmentForm() {
   };
 
   return (
-    <div className="flex-1 pl-6">
+    <div className="flex-1">
       <h2 className="text-xl font-bold mb-6"> Cadastro de Agendamento</h2>
       <p className="mb-6">
-        Cadastrar agendamento para dia <strong>30/11/2024</strong> às{" "}
-        <strong>15:00</strong>
+        Cadastrar agendamento para dia{" "}
+        <strong>{toLongDate(selectedDate)}</strong> às{" "}
+        <strong>{formatHour(selectedTime)}</strong>
       </p>
 
       <form
@@ -103,6 +117,7 @@ export function AppointmentForm() {
           <button
             type="button"
             className="relative flex-1 gap-1 bg-sky-200 p-3 rounded-lg text-center font-semibold hover:bg-sky-300 disabled:bg-slate-300 transition"
+            onClick={onBack}
           >
             <CaretLeft className="absolute size-6" /> Voltar
           </button>

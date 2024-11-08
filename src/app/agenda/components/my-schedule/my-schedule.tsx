@@ -13,9 +13,11 @@ import { AppointmentForm } from "../appointment-form";
 
 export function MySchedule() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [appointment, setAppointment] = useState<Appointment | null>(null);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [showForm, setShowForm] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const { toISO } = useFormat();
 
@@ -51,10 +53,12 @@ export function MySchedule() {
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
     setAppointment(null);
+    setShowForm(false);
   };
 
   const handleTimeSelect = (time: string) => {
-    setAppointment(null);
+    setSelectedTime(time);
+    setShowForm(true);
 
     if (appointments.length > 0) {
       const matchingAppointment = appointments.find(
@@ -67,6 +71,11 @@ export function MySchedule() {
 
       setAppointment(matchingAppointment || null);
     }
+  };
+
+  const handleBack = () => {
+    setShowForm(false);
+    setSelectedTime(null);
   };
 
   const mappedAppointments = appointments.map((appointment) => ({
@@ -91,12 +100,20 @@ export function MySchedule() {
 
         <div className="flex gap-8">
           <Calendar onDateSelect={handleDateSelect} />
-          {/* <TimeStamps
-            onTimeSelect={handleTimeSelect}
-            selectedDate={selectedDate}
-            appointments={mappedAppointments}
-          /> */}
-          <AppointmentForm />
+
+          {showForm ? (
+            <AppointmentForm
+              selectedDate={selectedDate}
+              selectedTime={selectedTime}
+              onBack={handleBack}
+            />
+          ) : (
+            <TimeStamps
+              onTimeSelect={handleTimeSelect}
+              selectedDate={selectedDate}
+              appointments={mappedAppointments}
+            />
+          )}
         </div>
 
         {appointment && <AppointmentDetails appointment={appointment} />}
