@@ -82,7 +82,7 @@ export function FormLogin() {
       </div>
       <button
         type="submit"
-        className="bg-sky-500 p-3 rounded-lg text-center font-semibold disabled:bg-slate-300"
+        className="flex-1 bg-sky-500 p-3 rounded-lg text-white text-center font-semibold hover:bg-sky-600 disabled:bg-slate-300 transition"
         disabled={!isValid}
       >
         Entrar

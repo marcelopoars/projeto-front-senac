@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormat } from "@/hooks";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { api } from "@/lib";
 import { Calendar } from "../calendar";
@@ -9,6 +9,7 @@ import { TimeStamps } from "../timestamps";
 
 import { AppointmentDetails } from "../appointment-details";
 import { Appointment, AppointmentResponse } from "./interfaces";
+import { AppointmentForm } from "../appointment-form";
 
 export function MySchedule() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -41,12 +42,11 @@ export function MySchedule() {
       fetchAppointments(selectedDate);
     }
   }, [selectedDate]);
-  
+
   useEffect(() => {
     const today = new Date();
     setSelectedDate(today);
   }, []);
-
 
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
@@ -91,11 +91,12 @@ export function MySchedule() {
 
         <div className="flex gap-8">
           <Calendar onDateSelect={handleDateSelect} />
-          <TimeStamps
+          {/* <TimeStamps
             onTimeSelect={handleTimeSelect}
             selectedDate={selectedDate}
             appointments={mappedAppointments}
-          />
+          /> */}
+          <AppointmentForm />
         </div>
 
         {appointment && <AppointmentDetails appointment={appointment} />}

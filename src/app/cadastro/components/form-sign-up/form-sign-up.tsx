@@ -45,6 +45,7 @@ const signUpFormSchema = z.object({
 });
 
 type SignUpFormInputs = z.infer<typeof signUpFormSchema>;
+
 export function FormSignUp() {
   const router = useRouter();
 
@@ -93,6 +94,7 @@ export function FormSignUp() {
   };
 
   const data = watch();
+  
   const { phone, cpfOrCnpj, password, confirmPassword } = data;
 
   useEffect(() => {
@@ -105,12 +107,12 @@ export function FormSignUp() {
       onSubmit={handleSubmit(onSubmitForm)}
       className="flex flex-col max-w-[400px]"
     >
-      <div className="flex flex-col pb-8">
+      <div className="pb-8">
         <label htmlFor="name" className="sr-only">
           Nome
         </label>
         <input
-          className={`border p-3 rounded-lg ${
+          className={`w-full border p-3 rounded-lg ${
             errors.name ? "border-red-500" : ""
           }`}
           id="name"
@@ -122,12 +124,12 @@ export function FormSignUp() {
         <ErrorMessage error={errors.name?.message} />
       </div>
 
-      <div className="flex flex-col pb-8">
+      <div className="pb-8">
         <label htmlFor="email" className="sr-only">
           Email
         </label>
         <input
-          className={`border p-3 rounded-lg ${
+          className={`w-full border p-3 rounded-lg ${
             errors.email ? "border-red-500" : ""
           }`}
           id="email"
@@ -140,12 +142,12 @@ export function FormSignUp() {
         />
         <ErrorMessage error={errors.email?.message} />
       </div>
-      <div className="flex flex-col pb-8">
+      <div className="pb-8">
         <label htmlFor="phone" className="sr-only">
           Telefone ou WhatsApp
         </label>
         <input
-          className={`border p-3 rounded-lg ${
+          className={`w-full border p-3 rounded-lg ${
             errors.phone ? "border-red-500" : ""
           }`}
           id="phone"
@@ -158,12 +160,12 @@ export function FormSignUp() {
         <ErrorMessage error={errors.phone?.message} />
       </div>
 
-      <div className="flex flex-col pb-8">
+      <div className="pb-8">
         <label htmlFor="cpfOrCnpj" className="sr-only">
           CPF ou CNPJ
         </label>
         <input
-          className={`border p-3 rounded-lg ${
+          className={`w-full border p-3 rounded-lg ${
             errors.cpfOrCnpj ? "border-red-500" : ""
           }`}
           id="cpfOrCnpj"
@@ -201,13 +203,13 @@ export function FormSignUp() {
         <ErrorMessage error={errors.category?.message} />
       </div>
 
-      <div className="flex flex-col pb-8">
+      <div className="pb-8">
         <label htmlFor="description" className="sr-only">
           Descrição do serviço
         </label>
         <textarea
           id="description"
-          className="border p-3 rounded-lg"
+          className="w-full border p-3 rounded-lg"
           placeholder="Descreva aqui os seus serviços."
           aria-describedby={
             errors.description ? "description-error" : undefined
@@ -217,12 +219,12 @@ export function FormSignUp() {
         <ErrorMessage error={errors.description?.message} />
       </div>
 
-      <div className="flex flex-col pb-8">
+      <div className="pb-8">
         <label htmlFor="password" className="sr-only">
           Senha
         </label>
         <input
-          className={`border p-3 rounded-lg ${
+          className={`w-full border p-3 rounded-lg ${
             errors.password ? "border-red-500" : ""
           }`}
           id="password"
@@ -238,12 +240,12 @@ export function FormSignUp() {
         <ErrorMessage error={errors.password?.message} />
       </div>
 
-      <div className="flex flex-col pb-8">
+      <div className="pb-8">
         <label htmlFor="confirmPassword" className="sr-only">
           Confirmar senha
         </label>
         <input
-          className={`border p-3 rounded-lg ${
+          className={`w-full border p-3 rounded-lg ${
             errors.confirmPassword ? "border-red-500" : ""
           }`}
           id="confirmPassword"
@@ -263,7 +265,7 @@ export function FormSignUp() {
 
       <button
         type="submit"
-        className="bg-sky-500 p-3 rounded-lg text-center font-semibold disabled:bg-slate-300"
+        className="flex-1 bg-sky-500 p-3 rounded-lg text-white text-center font-semibold hover:bg-sky-600 disabled:bg-slate-300 transition"
         disabled={!isValid}
       >
         Cadastrar
