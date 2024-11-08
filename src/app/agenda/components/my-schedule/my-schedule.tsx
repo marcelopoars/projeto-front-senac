@@ -42,7 +42,7 @@ export function MySchedule() {
     if (selectedDate) {
       fetchAppointments(selectedDate);
     }
-  }, [selectedDate, fetchAppointments]);
+  }, [selectedDate]);
 
   useEffect(() => {
     const today = new Date();
