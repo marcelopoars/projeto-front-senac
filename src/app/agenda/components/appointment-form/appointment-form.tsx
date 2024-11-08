@@ -62,6 +62,8 @@ export function AppointmentForm({
       ...data,
       phone: cleanedPhone,
     };
+
+    console.log(cleanedData);
   };
 
   return (
