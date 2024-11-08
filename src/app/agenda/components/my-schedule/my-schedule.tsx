@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormat } from "@/hooks";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { api } from "@/lib";
 import { Calendar } from "../calendar";
@@ -9,15 +9,41 @@ import { TimeStamps } from "../timestamps";
 
 import { AppointmentDetails } from "../appointment-details";
 import { Appointment, AppointmentResponse } from "./interfaces";
+import { AppointmentForm } from "../appointment-form";
 
 export function MySchedule() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  // const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [appointment, setAppointment] = useState<Appointment | null>(null);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [showForm, setShowForm] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const { toISO } = useFormat();
+
+  const fetchAppointments = async (date: Date) => {
+    const formattedDate = toISO(date);
+
+    setLoading(true);
+
+    try {
+      const response = await api.get<AppointmentResponse>(
+        `/gestao/api/management/agendamentos/62/${formattedDate}/${formattedDate}`
+      );
+      setAppointments(response.data.agendamentos);
+      console.log("Agendamentos carregados:", response.data.agendamentos);
+    } catch (error) {
+      console.error("Erro ao buscar os agendamentos:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedDate) {
+      fetchAppointments(selectedDate);
+    }
+  }, [selectedDate]);
 
   useEffect(() => {
     const today = new Date();
@@ -26,37 +52,13 @@ export function MySchedule() {
 
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
-    // setSelectedTime(null);
     setAppointment(null);
+    setShowForm(false);
   };
 
-  useEffect(() => {
-    const fetchAppointments = async () => {
-      if (selectedDate) {
-        const formattedDate = toISO(selectedDate); // Formata a data como "YYYY-MM-DD"
-
-        setLoading(true);
-
-        try {
-          const response = await api.get<AppointmentResponse>(
-            `/gestao/api/management/agendamentos/62/${formattedDate}/${formattedDate}`
-          );
-          setAppointments(response.data.agendamentos);
-          console.log(response.data.agendamentos);
-        } catch (error) {
-          console.error("Erro ao buscar os agendamentos:", error);
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-
-    fetchAppointments();
-  }, [selectedDate]);
-
   const handleTimeSelect = (time: string) => {
-    // setSelectedTime(time);
-    setAppointment(null);
+    setSelectedTime(time);
+    setShowForm(true);
 
     if (appointments.length > 0) {
       const matchingAppointment = appointments.find(
@@ -71,17 +73,18 @@ export function MySchedule() {
     }
   };
 
-  const mappedAppointments = useMemo(
-    () =>
-      appointments.map((appointment) => ({
-        hora_inicio: appointment.agendamento.hora_inicio,
-        cliente: {
-          nome: appointment.cliente.nome,
-          data_agendamento: appointment.agendamento.data_agendamento,
-        },
-      })),
-    [appointments]
-  );
+  const handleBack = () => {
+    setShowForm(false);
+    setSelectedTime(null);
+  };
+
+  const mappedAppointments = appointments.map((appointment) => ({
+    hora_inicio: appointment.agendamento.hora_inicio,
+    cliente: {
+      nome: appointment.cliente.nome,
+      data_agendamento: appointment.agendamento.data_agendamento,
+    },
+  }));
 
   return (
     <section className="h-full">
@@ -97,11 +100,20 @@ export function MySchedule() {
 
         <div className="flex gap-8">
           <Calendar onDateSelect={handleDateSelect} />
-          <TimeStamps
-            onTimeSelect={handleTimeSelect}
-            selectedDate={selectedDate}
-            appointments={mappedAppointments}
-          />
+
+          {showForm ? (
+            <AppointmentForm
+              selectedDate={selectedDate}
+              selectedTime={selectedTime}
+              onBack={handleBack}
+            />
+          ) : (
+            <TimeStamps
+              onTimeSelect={handleTimeSelect}
+              selectedDate={selectedDate}
+              appointments={mappedAppointments}
+            />
+          )}
         </div>
 
         {appointment && <AppointmentDetails appointment={appointment} />}
