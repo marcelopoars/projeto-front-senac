@@ -1,4 +1,5 @@
 import { useFormat } from "@/hooks";
+import { useEffect } from "react";
 import { twMerge } from "tailwind-merge";
 
 interface TimeStampsProps {
@@ -10,6 +11,19 @@ interface TimeStampsProps {
   }[];
 }
 
+const hours = [
+  "08:00:00",
+  "09:00:00",
+  "10:00:00",
+  "11:00:00",
+  "12:00:00",
+  "13:00:00",
+  "14:00:00",
+  "15:00:00",
+  "16:00:00",
+  "17:00:00",
+];
+
 export function TimeStamps({
   onTimeSelect,
   selectedDate,
@@ -17,18 +31,10 @@ export function TimeStamps({
 }: TimeStampsProps) {
   const { formatHour } = useFormat();
 
-  const hours = [
-    "08:00:00",
-    "09:00:00",
-    "10:00:00",
-    "11:00:00",
-    "12:00:00",
-    "13:00:00",
-    "14:00:00",
-    "15:00:00",
-    "16:00:00",
-    "17:00:00",
-  ];
+  useEffect(() => {
+    console.log("Agendamentos carregados:", appointments);
+    console.log("Data selecionada:", selectedDate);
+  }, [appointments, selectedDate]);
 
   const updatedHours = hours.map((hour) => {
     const appointment = appointments.find(
@@ -49,8 +55,6 @@ export function TimeStamps({
   const handleTimeClick = (time: string) => {
     if (selectedDate) {
       onTimeSelect(time);
-      console.log("Data selecionada:", selectedDate);
-      console.log("Horário selecionado:", time);
     } else {
       console.log(
         "Por favor, selecione uma data antes de escolher um horário."
