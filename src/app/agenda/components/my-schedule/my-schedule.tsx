@@ -100,7 +100,7 @@ export function MySchedule() {
         <div className="flex gap-8">
           <Calendar onDateSelect={handleDateSelect} />
 
-          {showForm ? (
+          {showForm && !appointment ? (
             <AppointmentForm
               selectedDate={selectedDate}
               selectedTime={selectedTime}
