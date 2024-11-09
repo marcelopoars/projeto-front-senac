@@ -1,6 +1,7 @@
 import { useFormat } from "@/hooks";
 import { Trash, WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
 import { useCallback } from "react";
+import { api } from "@/lib";
 
 import { Appointment } from "../my-schedule/interfaces";
 
@@ -63,7 +64,22 @@ export function AppointmentDetails({
           </p>
         </div>
 
-        <button className="flex items-center justify-center gap-2 bg-red-500 text-white font-semibold py-2 px-4 rounded-full hover:bg-red-700 transition">
+        <button 
+          onClick={ async() => {
+            try {
+              const res = await api.put(`https://core.wecom.com.br/gestao/api/management/agendamentos/${agendamento.id}`, {
+                status: "cancelado"
+              });
+
+              console.log("Status do agendamento atualizado!", res.data);
+
+            } catch (error) {
+              console.error("Erro ao cancelar o agendamento!", error);
+            }
+          }}
+
+          className="flex items-center justify-center gap-2 bg-red-500 text-white font-semibold py-2 px-4 rounded-full hover:bg-red-700 transition">
+          
           <Trash className="size-5" /> Cancelar agendamento
         </button>
       </div>

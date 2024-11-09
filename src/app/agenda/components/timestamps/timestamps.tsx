@@ -9,6 +9,7 @@ interface TimeStampsProps {
   appointments: {
     hora_inicio: string;
     cliente: { nome: string; data_agendamento: string };
+    status: string;
   }[];
 }
 
@@ -41,7 +42,8 @@ export function TimeStamps({
         selectedDate?.toISOString().split("T")[0] ===
           new Date(appointment.cliente.data_agendamento)
             .toISOString()
-            .split("T")[0]
+            .split("T")[0] &&
+        appointment.status !== "cancelado" 
     );
 
     return {
@@ -71,14 +73,14 @@ export function TimeStamps({
           key={hour}
           onClick={() => handleTimeClick(hour)}
           className={twMerge(
-            "flex items-center justify-center  bg-green-200 text-sky-800 px-5 rounded-lg hover:bg-green-300 transition lg: gap-2 lg:justify-start disabled:text-zinc-400 disabled:bg-zinc-100",
+            "flex items-center justify-center bg-green-200 text-sky-800 px-5 rounded-lg hover:bg-green-300 transition lg: gap-2 lg:justify-start disabled:text-zinc-400 disabled:bg-zinc-100",
             client === "Livre"
               ? ""
               : "bg-sky-200 hover:bg-sky-300 focus-visible:border"
           )}
           title={
             client === "Livre"
-              ? "Ciique para agendar"
+              ? "Clique para agendar"
               : "Ver detalhes do agendamento"
           }
           disabled={isPastDate && client === "Livre"}

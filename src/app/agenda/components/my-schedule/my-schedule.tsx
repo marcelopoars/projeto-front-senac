@@ -83,6 +83,7 @@ export function MySchedule() {
       nome: appointment.cliente.nome,
       data_agendamento: appointment.agendamento.data_agendamento,
     },
+    status: appointment.agendamento.status,
   }));
 
   return (
