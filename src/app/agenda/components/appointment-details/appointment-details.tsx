@@ -10,7 +10,7 @@ interface AppointmentDetailsProps {
 }
 
 export function AppointmentDetails({
-  appointment: { agendamento, cliente },
+  appointment: { agendamento, cliente, prestador},
 }: AppointmentDetailsProps) {
   const { toLongDate, formatHour } = useFormat();
 
@@ -67,9 +67,20 @@ export function AppointmentDetails({
         <button 
           onClick={ async() => {
             try {
-              const res = await api.put(`https://core.wecom.com.br/gestao/api/management/agendamentos/${agendamento.id}`, {
-                status: "cancelado"
-              });
+              const res = await api.put(
+                `https://core.wecom.com.br/gestao/api/management/agendamentos/${agendamento.id}`,
+                {
+                  cliente_id: cliente.id,
+                  prestador_id: prestador.id,
+                  data_agendamento: agendamento.data_agendamento,
+                  hora_inicio: agendamento.hora_inicio,
+                  hora_fim: agendamento.hora_fim,
+                  status: "cancelado"
+                },
+                {
+                  headers: { "Content-Type": "application/json" }
+                }
+              );
 
               console.log("Status do agendamento atualizado!", res.data);
 
