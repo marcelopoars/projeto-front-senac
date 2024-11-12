@@ -8,6 +8,7 @@ import { z } from "zod";
 
 import { ErrorMessage } from "@/components";
 import { normalizeCpfOrCnpj, normalizePhoneNumber } from "@/utils";
+import { api } from "@/lib";
 
 const signUpFormSchema = z.object({
   name: z.string().min(1, { message: "Por favor, insira o seu nome." }),
@@ -71,7 +72,71 @@ export function FormSignUp() {
     },
   });
 
-  const onSubmitForm: SubmitHandler<SignUpFormInputs> = (data) => {
+  const onSubmitForm: SubmitHandler<SignUpFormInputs> = async (data) => {
+    const {
+      name,
+      email,
+      phone,
+      cpfOrCnpj,
+      password,
+      confirmPassword,
+      category,
+    } = data;
+
+    const newProvider = {
+      nome: name,
+      email: email,
+      senha: password,
+      telefone: phone,
+      cpf_cnpj: cpfOrCnpj,
+      atividade: "Desenvolvedor de Software",
+      servico: "Criação de sites e aplicações",
+      logo_base64:
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...base64string",
+      social_media: "https://www.linkedin.com/in/marcelopoars/",
+      website: "https://www.marcelopereira.dev/",
+      cidade: "Porto Alegre",
+      estado: {
+        nome: "Rio Grande do Sul",
+        sigla: "RS",
+      },
+      ritmo_trabalho: [
+        {
+          dia_semana: "segunda",
+          hora_inicio: "08:00:00",
+          hora_fim: "18:00:00",
+        },
+        {
+          dia_semana: "terça",
+          hora_inicio: "08:00:00",
+          hora_fim: "18:00:00",
+        },
+        {
+          dia_semana: "quarta",
+          hora_inicio: "08:00:00",
+          hora_fim: "18:00:00",
+        },
+        {
+          dia_semana: "quinta",
+          hora_inicio: "08:00:00",
+          hora_fim: "18:00:00",
+        },
+        {
+          dia_semana: "sexta",
+          hora_inicio: "08:00:00",
+          hora_fim: "18:00:00",
+        },
+      ],
+      categoria_id: Number(category),
+      subcategoria_id: 2,
+      tipo_agenda: null,
+    };
+
+    const response = await api.post(
+      "/gestao/api/management/register",
+      newProvider
+    );
+
     if (password !== confirmPassword) {
       setError("confirmPassword", {
         type: "manual",
@@ -91,7 +156,7 @@ export function FormSignUp() {
 
     console.log(cleanedData);
 
-    router.push("/prestador");
+    // router.push("/prestador");
   };
 
   const data = watch();
@@ -192,13 +257,13 @@ export function FormSignUp() {
           {...register("category")}
         >
           <option value="">Selecione uma categoria</option>
-          <option value="Automotivo">Automotivo</option>
-          <option value="Beleza">Beleza</option>
-          <option value="Consultoria">Consultoria</option>
-          <option value="Fotografia">Fotografia</option>
-          <option value="Jardinagem">Jardinagem</option>(55) 51981-8381
-          <option value="Limpeza">Limpeza</option>
-          <option value="Manutenção">Manutenção</option>
+          <option value="1">Automotivo</option>
+          <option value="2">Beleza</option>
+          <option value="3">Consultoria</option>
+          <option value="4">Fotografia</option>
+          <option value="5">Jardinagem</option>(55) 51981-8381
+          <option value="6">Limpeza</option>
+          <option value="7">Manutenção</option>
           <option value="Outros">Outros</option>
         </select>
         <ErrorMessage error={errors.category?.message} />
