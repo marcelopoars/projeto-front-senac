@@ -68,13 +68,14 @@ export function AppointmentDetails({
           onClick={ async() => {
             try {
               const res = await api.put(
-                `https://core.wecom.com.br/gestao/api/management/agendamentos/${agendamento.id}`,
+                `/gestao/api/management/agendamentos/${agendamento.id}`,
                 {
                   cliente_id: cliente.id,
                   prestador_id: prestador.id,
                   data_agendamento: agendamento.data_agendamento,
                   hora_inicio: agendamento.hora_inicio,
                   hora_fim: agendamento.hora_fim,
+                  assunto: agendamento.assunto,
                   status: "cancelado"
                 },
                 {
@@ -86,6 +87,7 @@ export function AppointmentDetails({
 
             } catch (error) {
               console.error("Erro ao cancelar o agendamento!", error);
+              console.log(agendamento.id, cliente.id, prestador.id, agendamento.data_agendamento, agendamento.hora_inicio, agendamento.hora_fim, agendamento.assunto);
             }
           }}
 
