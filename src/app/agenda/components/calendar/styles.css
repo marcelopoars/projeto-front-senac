@@ -32,16 +32,14 @@
 }
 
 .react-calendar__tile--now {
-  --tw-bg-opacity: 1;
-  background-color: rgb(14 165 233 / var(--tw-bg-opacity));
-  color: white;
+  --tw-text-opacity: 1;
+  color: rgb(239 68 68 / var(--tw-text-opacity));
 }
 
 .react-calendar__tile--active {
   --tw-bg-opacity: 1;
-  background-color: #bae6fd;
-  --tw-text-opacity: 1;
-  color: rgb(24 24 27 / var(--tw-text-opacity));
+  background-color: rgb(14 165 233 / var(--tw-bg-opacity));
+  color: white;
 }
 
 .react-calendar__navigation {
