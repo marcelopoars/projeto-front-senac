@@ -28,7 +28,7 @@ export function MySchedule() {
 
     try {
       const response = await api.get<AppointmentResponse>(
-        `/gestao/api/management/agendamentos/62/${formattedDate}/${formattedDate}`
+        `/gestao/api/management/agendamentos/53/${formattedDate}/${formattedDate}`
       );
       setAppointments(response.data.agendamentos);
     } catch (error) {
@@ -73,8 +73,11 @@ export function MySchedule() {
   };
 
   const handleBack = () => {
-    setShowForm(false);
+    if (selectedDate) {
+      fetchAppointments(selectedDate);
+    }
     setSelectedTime(null);
+    setShowForm(false);
   };
 
   const mappedAppointments = appointments.map((appointment) => ({
