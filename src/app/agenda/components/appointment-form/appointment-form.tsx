@@ -84,10 +84,7 @@ export function AppointmentForm({
     };
 
     try {
-      const response = await api.post(
-        "/gestao/api/management/agendamentos",
-        newAppointment
-      );
+      const response = await api.post("/agendamentos", newAppointment);
 
       console.log(response.data);
 

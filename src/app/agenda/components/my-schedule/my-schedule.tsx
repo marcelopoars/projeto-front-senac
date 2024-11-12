@@ -10,6 +10,7 @@ import { TimeStamps } from "../timestamps";
 import { AppointmentDetails } from "../appointment-details";
 import { Appointment, AppointmentResponse } from "./interfaces";
 import { AppointmentForm } from "../appointment-form";
+import { CircleNotch } from "@phosphor-icons/react/dist/ssr";
 
 export function MySchedule() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -28,7 +29,7 @@ export function MySchedule() {
 
     try {
       const response = await api.get<AppointmentResponse>(
-        `/gestao/api/management/agendamentos/53/${formattedDate}/${formattedDate}`
+        `/agendamentos/53/${formattedDate}/${formattedDate}`
       );
       setAppointments(response.data.agendamentos);
     } catch (error) {
@@ -42,6 +43,7 @@ export function MySchedule() {
     if (selectedDate) {
       fetchAppointments(selectedDate);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDate]);
 
   useEffect(() => {
@@ -96,7 +98,10 @@ export function MySchedule() {
             Minha agenda
           </h1>
           {loading && (
-            <span className="text-zinc-600 animate-pulse">Carregando...</span>
+            <div className="flex items-center gap-1 animate-pulse">
+              <CircleNotch className="size-6 text-zinc-600 animate-spin" />
+              <span className="text-zinc-">Carregando...</span>
+            </div>
           )}
         </div>
 
