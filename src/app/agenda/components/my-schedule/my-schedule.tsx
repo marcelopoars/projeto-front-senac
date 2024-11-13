@@ -99,8 +99,8 @@ export function MySchedule() {
           </h1>
           {loading && (
             <div className="flex items-center gap-1 animate-pulse">
-              <CircleNotch className="size-6 text-zinc-600 animate-spin" />
-              <span className="text-zinc-">Carregando...</span>
+              <CircleNotch className="size-6 text-zinc-500 animate-spin" />
+              <span className="text-zinc-500">Carregando...</span>
             </div>
           )}
         </div>
