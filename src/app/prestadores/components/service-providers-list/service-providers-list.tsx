@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { CategoryFilter } from "../category-filter";
@@ -26,7 +26,7 @@ type Provider = {
   };
 };
 
-export function ServiceProvidersList() {
+export function ServiceProvidersListContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialCategoryId = searchParams.get("categoria") || "10";
@@ -112,5 +112,13 @@ export function ServiceProvidersList() {
         )}
       </div>
     </section>
+  );
+}
+
+export function ServiceProvidersList() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ServiceProvidersListContent />
+    </Suspense>
   );
 }
