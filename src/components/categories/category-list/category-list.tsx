@@ -44,21 +44,15 @@ export function CategoryList() {
   }, []);
 
   if (loading) {
-    return <span className="text-lg text-center block">Carregando...</span>;
+    return <p className="text-lg text-center">Carregando...</p>;
   }
 
   if (error) {
-    return (
-      <span className="text-lg text-center block text-red-500">{error}</span>
-    );
+    return <p className="text-lg text-center text-red-500">{error}</p>;
   }
 
   if (categories !== null && categories.length === 0) {
-    return (
-      <span className="text-lg text-center block">
-        Nenhuma categoria encontrada...
-      </span>
-    );
+    return <p className="text-lg text-center">Nenhuma categoria encontrada.</p>;
   }
 
   if (categories !== null && categories.length > 0) {
@@ -70,7 +64,7 @@ export function CategoryList() {
 
         <div className="grid justify-around content-around grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-12 xl:grid-cols-4">
           {categories?.map(({ id, nome }) => (
-            <CardCategory key={id} category={nome} />
+            <CardCategory key={id} category={nome} id={id} />
           ))}
         </div>
       </>

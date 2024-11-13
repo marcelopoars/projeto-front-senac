@@ -1,13 +1,14 @@
 import Link from "next/link";
 
 interface CardCategoryProps {
+  id: number;
   category: string;
 }
 
-export function CardCategory({ category }: CardCategoryProps) {
+export function CardCategory({ category, id }: CardCategoryProps) {
   return (
     <Link
-      href="/prestadores"
+      href={`/prestadores?categoria=${id}`}
       className="group inline-block border rounded-lg overflow-hidden w-full hover:border-sky-500 transition"
     >
       <header className="py-8 px-4 md:py-12">
