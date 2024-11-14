@@ -56,6 +56,26 @@ export function AppointmentForm({
 
   const { phone } = data;
 
+  const getAuthTokenFromCookies = () => {
+    const cookieString = document.cookie;
+    console.log("cookieString", cookieString);
+
+    const cookies = cookieString
+      .split("; ")
+      .reduce((acc: Record<string, string>, cookie) => {
+        const [name, value] = cookie.split("=");
+        acc[name] = value;
+        return acc;
+      }, {});
+    return cookies.authToken || null;
+  };
+
+  const getProviderIdFromLocalStorage = () => {
+    const providerId = localStorage.getItem("providerId");
+    console.log("Provider ID:", providerId);
+    return providerId;
+  };
+
   useEffect(() => {
     if (phone) setValue("phone", normalizePhoneNumber(phone));
   }, [phone, setValue]);
@@ -64,18 +84,20 @@ export function AppointmentForm({
     setErrorMessage(null);
     setSuccessMessage(null);
 
-    const cleanedPhone = data.phone.replace(/\D/g, "");
+    const authToken = getAuthTokenFromCookies();
+    const providerId = getProviderIdFromLocalStorage();
 
-    const cleanedData = {
-      ...data,
-      phone: cleanedPhone,
-    };
-
-    console.log({ cleanedData });
+    if (!authToken || !providerId) {
+      setErrorMessage(
+        "Erro: Não foi possível obter o token de autenticação ou o ID do prestador."
+      );
+      return;
+    }
 
     const newAppointment = {
-      cliente_id: 151,
-      prestador_id: 53,
+      cliente_telefone: data.phone.replace(/\D/g, ""),
+      cliente_nome: data.name,
+      prestador_id: providerId,
       data_agendamento: toISO(selectedDate),
       hora_inicio: selectedTime,
       hora_fim: selectedTime,
@@ -84,9 +106,11 @@ export function AppointmentForm({
     };
 
     try {
-      const response = await api.post("/agendamentos", newAppointment);
-
-      console.log(response.data);
+      const response = await api.post("/agendamentos", newAppointment, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
 
       setSuccessMessage("Agendamento realizado com sucesso!");
 
@@ -163,7 +187,7 @@ export function AppointmentForm({
           <ErrorMessage error={errors.phone?.message} />
         </div>
 
-        <div className="flex gap-4">
+        <div className="grid grid-cols-2 gap-6">
           <button
             type="button"
             className={twMerge(
@@ -182,7 +206,8 @@ export function AppointmentForm({
               isSubmitting
                 ? "bg-sky-400 animate-pulse"
                 : "bg-sky-500 hover:bg-sky-600",
-              !isValid || isSubmitting ? "disabled:bg-slate-300" : ""
+              !isValid || isSubmitting ? "disabled:bg-slate-300" : "",
+              successMessage || errorMessage ? "hidden" : ""
             )}
             disabled={!isValid || isSubmitting}
           >

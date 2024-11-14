@@ -20,6 +20,26 @@ const loginSchema = z.object({
 
 type FormInputs = z.infer<typeof loginSchema>;
 
+interface User {
+  id: number;
+  nome: string;
+  email: string;
+  senha: string;
+  telefone: string;
+  ativo: boolean;
+  tipo_usuario: string;
+  cidade_id: number;
+  criado_em: string;
+  atualizado_em: string | null;
+  prestador_id: number;
+}
+
+interface LoginResponse {
+  token: string;
+  refreshToken: string;
+  usuario: User;
+}
+
 export function FormLogin() {
   const router = useRouter();
   const [apiError, setApiError] = useState<string | null>(null);
@@ -33,23 +53,24 @@ export function FormLogin() {
     mode: "onTouched",
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: "cliente.teste@example.com",
+      password: "senhaSegura123",
     },
   });
 
   const onSubmitForm: SubmitHandler<FormInputs> = async (data) => {
     try {
-      const response = await api.post("/login", {
+      const response = await api.post<LoginResponse>("/login", {
         email: data.email,
         password: data.password,
       });
 
-      const { token, usuario } = response.data;
+      const { token, usuario  } = response.data;
 
       document.cookie = `authToken=${token}; path=/; max-age=${60 * 60 * 24}`;
 
       localStorage.setItem("userName", usuario.nome);
+      localStorage.setItem("providerId", usuario.prestador_id.toString());
 
       reset();
       setApiError(null);
