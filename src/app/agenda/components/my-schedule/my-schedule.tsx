@@ -29,7 +29,7 @@ export function MySchedule() {
 
     try {
       const response = await api.get<AppointmentResponse>(
-        `/agendamentos/53/${formattedDate}/${formattedDate}`
+        `/agendamentos/74/${formattedDate}/${formattedDate}`
       );
       setAppointments(response.data.agendamentos);
     } catch (error) {

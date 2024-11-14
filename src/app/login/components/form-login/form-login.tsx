@@ -1,9 +1,13 @@
 "use client";
 
 import { ErrorMessage } from "@/components";
+import { api } from "@/lib";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CircleNotch } from "@phosphor-icons/react/dist/ssr";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { twMerge } from "tailwind-merge";
 import { z } from "zod";
 
 const loginSchema = z.object({
@@ -18,11 +22,13 @@ type FormInputs = z.infer<typeof loginSchema>;
 
 export function FormLogin() {
   const router = useRouter();
+  const [apiError, setApiError] = useState<string | null>(null);
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    reset,
+    formState: { errors, isValid, isSubmitting },
   } = useForm<FormInputs>({
     mode: "onTouched",
     resolver: zodResolver(loginSchema),
@@ -32,10 +38,28 @@ export function FormLogin() {
     },
   });
 
-  const onSubmitForm: SubmitHandler<FormInputs> = (data) => {
-    console.log(data);
+  const onSubmitForm: SubmitHandler<FormInputs> = async (data) => {
+    try {
+      const response = await api.post("/login", {
+        email: data.email,
+        password: data.password,
+      });
 
-    router.push("/agenda");
+      const { token, usuario } = response.data;
+
+      document.cookie = `authToken=${token}; path=/; max-age=${60 * 60 * 24}`;
+
+      localStorage.setItem("userName", usuario.nome);
+
+      reset();
+      setApiError(null);
+
+      router.push("/agenda");
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.error("Erro ao fazer login:", error);
+      setApiError(error.response?.data?.message || "Erro ao fazer login.");
+    }
   };
 
   return (
@@ -49,7 +73,7 @@ export function FormLogin() {
         </label>
         <input
           className={`border p-3 rounded-lg ${
-            errors.email ? "border-red-500" : ""
+            errors.email || apiError ? "border-red-500" : ""
           }`}
           id="email"
           type="email"
@@ -67,7 +91,7 @@ export function FormLogin() {
         </label>
         <input
           className={`border p-3 rounded-lg ${
-            errors.password ? "border-red-500" : ""
+            errors.password || apiError ? "border-red-500" : ""
           }`}
           id="password"
           type="password"
@@ -83,11 +107,20 @@ export function FormLogin() {
       </div>
       <button
         type="submit"
-        className="flex-1 bg-sky-500 p-3 rounded-lg text-white text-center font-semibold hover:bg-sky-600 disabled:bg-slate-300 transition"
-        disabled={!isValid}
+        className={twMerge(
+          "flex-1 flex justify-center items-center bg-sky-500 p-3 rounded-lg hover:bg-sky-600 transition",
+          !isValid ? "disabled:bg-slate-300" : ""
+        )}
+        disabled={!isValid || isSubmitting}
       >
-        Entrar
+        {isSubmitting ? (
+          <CircleNotch className="size-6 text-white/50 animate-spin" />
+        ) : (
+          <span className="text-white text-center font-semibold">Entrar</span>
+        )}
       </button>
+
+      {apiError && <ErrorMessage error={apiError} />}
     </form>
   );
 }
