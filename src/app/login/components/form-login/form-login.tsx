@@ -53,8 +53,8 @@ export function FormLogin() {
     mode: "onTouched",
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "cliente.teste@example.com",
-      password: "senhaSegura123",
+      email: "",
+      password: "",
     },
   });
 
