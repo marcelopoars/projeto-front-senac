@@ -22,14 +22,38 @@ export function MySchedule() {
 
   const { toISO } = useFormat();
 
+  const getAuthTokenFromCookies = () => {
+    const cookieString = document.cookie;
+    const cookies = cookieString
+      .split("; ")
+      .reduce((acc: Record<string, string>, cookie) => {
+        const [name, value] = cookie.split("=");
+        acc[name] = value;
+        return acc;
+      }, {});
+    return cookies.authToken || null;
+  };
+
   const fetchAppointments = async (date: Date) => {
     const formattedDate = toISO(date);
+    const providerId = localStorage.getItem("providerId");
+    const token = getAuthTokenFromCookies();
+
+    if (!providerId || !token) {
+      console.error("Usuário não autenticado.");
+      return;
+    }
 
     setLoading(true);
 
     try {
       const response = await api.get<AppointmentResponse>(
-        `/agendamentos/74/${formattedDate}/${formattedDate}`
+        `/agendamentos/${providerId}/${formattedDate}/${formattedDate}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setAppointments(response.data.agendamentos);
     } catch (error) {
@@ -43,7 +67,7 @@ export function MySchedule() {
     if (selectedDate) {
       fetchAppointments(selectedDate);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDate]);
 
   useEffect(() => {
@@ -119,6 +143,7 @@ export function MySchedule() {
               onTimeSelect={handleTimeSelect}
               selectedDate={selectedDate}
               appointments={mappedAppointments}
+              isLoading={loading}
             />
           )}
         </div>
