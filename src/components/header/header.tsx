@@ -8,10 +8,13 @@ export function Header() {
   const router = useRouter();
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState<string | null>(null);
 
   const checkLoginStatus = () => {
     const token = document.cookie.includes("authToken");
-    setIsLoggedIn(token);
+    const storedUserName = localStorage.getItem("userName");
+    setIsLoggedIn(token && storedUserName !== null);
+    setUserName(storedUserName);
   };
 
   useEffect(() => {
@@ -26,7 +29,9 @@ export function Header() {
 
   const handleLogoff = () => {
     document.cookie = "authToken=; max-age=0; path=/";
+    localStorage.removeItem("userName");
     setIsLoggedIn(false);
+    setUserName(null);
     router.push("/login");
   };
 
@@ -39,26 +44,31 @@ export function Header() {
 
         <nav className="flex gap-3">
           {!isLoggedIn ? (
-            <Link
-              href="/login"
-              className="text-sm font-semibold rounded-lg py-2 px-3 md:text-base underline underline-offset-4"
-            >
-              Entrar
-            </Link>
+            <>
+              <Link
+                href="/login"
+                className="text-sky-950 text-sm font-semibold rounded-lg py-2 px-3 md:text-base underline underline-offset-4 hover:opacity-85 transition"
+              >
+                Entrar
+              </Link>
+              <Link
+                href="/cadastro"
+                className="bg-sky-900 text-sm rounded-lg text-white py-2 px-3 md:text-base hover:bg-sky-950 transition"
+              >
+                Cadastrar
+              </Link>
+            </>
           ) : (
-            <button
-              className="text-sm font-semibold rounded-lg py-2 px-3 md:text-base underline underline-offset-4"
-              onClick={handleLogoff}
-            >
-              Sair
-            </button>
+            <div className="flex items-center gap-3">
+              <span className="font-semibold text-white">Olá, {userName}</span>
+              <button
+                className="text-sky-950 text-sm font-semibold py-2 px-3 md:text-base underline underline-offset-4 hover:opacity-85 transition border-l border-sky-800/40"
+                onClick={handleLogoff}
+              >
+                Sair
+              </button>
+            </div>
           )}
-          <Link
-            href="/cadastro"
-            className="bg-sky-900 text-sm rounded-lg text-white py-2 px-3 md:text-base hover:bg-sky-950 transition"
-          >
-            Cadastrar
-          </Link>
         </nav>
       </div>
     </header>
