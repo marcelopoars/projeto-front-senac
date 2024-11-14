@@ -1,7 +1,9 @@
 "use client";
 
 import { ErrorMessage } from "@/components";
+import { api } from "@/lib";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { cookies } from "next/headers";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -32,10 +34,26 @@ export function FormLogin() {
     },
   });
 
-  const onSubmitForm: SubmitHandler<FormInputs> = (data) => {
+  const onSubmitForm: SubmitHandler<FormInputs> = async (data) => {
     console.log(data);
+    try {
+      const response = await api.post("/login", {
+        email: data.email,
+        password: data.password,
+      });
 
-    router.push("/agenda");
+      const { token, refreshToken, usuario } = response.data;
+
+      document.cookie = `authToken=${token}; path=/; max-age=${60 * 60 * 24}`;
+
+      console.log("Token JWT:", token);
+      console.log("Refresh Token:", refreshToken);
+      console.log("Usuário logado:", usuario);
+
+      router.push("/agenda");
+    } catch (error) {
+      console.error("Erro ao fazer login:", error);
+    }
   };
 
   return (
