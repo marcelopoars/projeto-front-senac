@@ -10,6 +10,7 @@ import { TimeStamps } from "../timestamps";
 import { AppointmentDetails } from "../appointment-details";
 import { Appointment, AppointmentResponse } from "./interfaces";
 import { AppointmentForm } from "../appointment-form";
+import { CircleNotch } from "@phosphor-icons/react/dist/ssr";
 
 export function MySchedule() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -21,14 +22,38 @@ export function MySchedule() {
 
   const { toISO } = useFormat();
 
+  const getAuthTokenFromCookies = () => {
+    const cookieString = document.cookie;
+    const cookies = cookieString
+      .split("; ")
+      .reduce((acc: Record<string, string>, cookie) => {
+        const [name, value] = cookie.split("=");
+        acc[name] = value;
+        return acc;
+      }, {});
+    return cookies.authToken || null;
+  };
+
   const fetchAppointments = async (date: Date) => {
     const formattedDate = toISO(date);
+    const providerId = localStorage.getItem("providerId");
+    const token = getAuthTokenFromCookies();
+
+    if (!providerId || !token) {
+      console.error("Usuário não autenticado.");
+      return;
+    }
 
     setLoading(true);
 
     try {
       const response = await api.get<AppointmentResponse>(
-        `/gestao/api/management/agendamentos/62/${formattedDate}/${formattedDate}`
+        `/agendamentos/${providerId}/${formattedDate}/${formattedDate}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setAppointments(response.data.agendamentos);
     } catch (error) {
@@ -42,6 +67,7 @@ export function MySchedule() {
     if (selectedDate) {
       fetchAppointments(selectedDate);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDate]);
 
   useEffect(() => {
@@ -73,8 +99,11 @@ export function MySchedule() {
   };
 
   const handleBack = () => {
-    setShowForm(false);
+    if (selectedDate) {
+      fetchAppointments(selectedDate);
+    }
     setSelectedTime(null);
+    setShowForm(false);
   };
 
   const mappedAppointments = appointments.map((appointment) => ({
@@ -94,7 +123,10 @@ export function MySchedule() {
             Minha agenda
           </h1>
           {loading && (
-            <span className="text-zinc-600 animate-pulse">Carregando...</span>
+            <div className="flex items-center gap-1 animate-pulse">
+              <CircleNotch className="size-6 text-zinc-500 animate-spin" />
+              <span className="text-zinc-500">Carregando...</span>
+            </div>
           )}
         </div>
 
@@ -112,6 +144,7 @@ export function MySchedule() {
               onTimeSelect={handleTimeSelect}
               selectedDate={selectedDate}
               appointments={mappedAppointments}
+              isLoading={loading}
             />
           )}
         </div>

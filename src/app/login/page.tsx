@@ -18,7 +18,7 @@ export default function LoginPage() {
 
         <Link
           href="/cadastro"
-          className="text-center block mt-2 underline underline-offset-2"
+          className="text-center block mt-5 underline underline-offset-2"
         >
           Cadastrar
         </Link>
