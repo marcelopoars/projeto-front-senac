@@ -3,7 +3,6 @@
 import { ErrorMessage } from "@/components";
 import { api } from "@/lib";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { cookies } from "next/headers";
 import { useRouter } from "next/navigation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -35,7 +34,6 @@ export function FormLogin() {
   });
 
   const onSubmitForm: SubmitHandler<FormInputs> = async (data) => {
-    console.log(data);
     try {
       const response = await api.post("/login", {
         email: data.email,
