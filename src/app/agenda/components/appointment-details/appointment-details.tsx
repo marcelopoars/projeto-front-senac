@@ -10,7 +10,7 @@ interface AppointmentDetailsProps {
 }
 
 export function AppointmentDetails({
-  appointment: { agendamento, cliente, prestador},
+  appointment: { agendamento, cliente, prestador },
 }: AppointmentDetailsProps) {
   const { toLongDate, formatHour } = useFormat();
 
@@ -28,7 +28,7 @@ export function AppointmentDetails({
     },
     [toLongDate]
   );
-  
+
   return (
     <div className="flex flex-col mt-4 py-8 px-6 bg-zinc-100 rounded-md">
       <div className="flex justify-between mb-4">
@@ -64,8 +64,8 @@ export function AppointmentDetails({
           </p>
         </div>
 
-        <button 
-          onClick={ async() => {
+        <button
+          onClick={async () => {
             try {
               const res = await api.put(
                 `/gestao/api/management/agendamentos/${agendamento.id}`,
@@ -76,23 +76,29 @@ export function AppointmentDetails({
                   hora_inicio: agendamento.hora_inicio,
                   hora_fim: agendamento.hora_fim,
                   assunto: agendamento.assunto,
-                  status: "cancelado"
+                  status: "cancelado",
                 },
                 {
-                  headers: { "Content-Type": "application/json" }
+                  headers: { "Content-Type": "application/json" },
                 }
               );
 
               console.log("Status do agendamento atualizado!", res.data);
-
             } catch (error) {
               console.error("Erro ao cancelar o agendamento!", error);
-              console.log(agendamento.id, cliente.id, prestador.id, agendamento.data_agendamento, agendamento.hora_inicio, agendamento.hora_fim, agendamento.assunto);
+              console.log(
+                agendamento.id,
+                cliente.id,
+                prestador.id,
+                agendamento.data_agendamento,
+                agendamento.hora_inicio,
+                agendamento.hora_fim,
+                agendamento.assunto
+              );
             }
           }}
-
-          className="flex items-center justify-center gap-2 bg-red-500 text-white font-semibold py-2 px-4 rounded-full hover:bg-red-700 transition">
-          
+          className="flex items-center justify-center gap-2 bg-red-500 text-white font-semibold py-2 px-4 rounded-full hover:bg-red-700 transition"
+        >
           <Trash className="size-5" /> Cancelar agendamento
         </button>
       </div>
