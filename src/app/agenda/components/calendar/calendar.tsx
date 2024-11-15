@@ -28,23 +28,22 @@ export function Calendar({ onDateSelect }: CalendarProps) {
   };
 
   return (
-    <div className="flex-1">
-      <ReactCalendar
-        locale="pt-BR"
-        onClickDay={handleDateChange}
-        value={selectedDate}
-        prevLabel={<CaretLeft />}
-        nextLabel={<CaretRight />}
-        prev2Label={<CaretDoubleLeft />}
-        next2Label={<CaretDoubleRight />}
-        tileDisabled={disableWeekends}
-        tileClassName={({ date }) =>
-          date.getDay() === 0 || date.getDay() === 6
-            ? "opacity-50 pointer-events-none"
-            : ""
-        }
-        goToRangeStartOnSelect
-      />
-    </div>
+    <ReactCalendar
+      className="flex-1 bg-red-700"
+      locale="pt-BR"
+      onClickDay={handleDateChange}
+      value={selectedDate}
+      prevLabel={<CaretLeft />}
+      nextLabel={<CaretRight />}
+      prev2Label={<CaretDoubleLeft />}
+      next2Label={<CaretDoubleRight />}
+      tileDisabled={disableWeekends}
+      tileClassName={({ date }) =>
+        date.getDay() === 0 || date.getDay() === 6
+          ? "opacity-50 pointer-events-none"
+          : ""
+      }
+      goToRangeStartOnSelect
+    />
   );
 }
