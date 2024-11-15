@@ -8,17 +8,19 @@ import { Calendar } from "../calendar";
 import { TimeStamps } from "../timestamps";
 
 import { AppointmentDetails } from "../appointment-details";
-import { Appointment, AppointmentResponse } from "./interfaces";
 import { AppointmentForm } from "../appointment-form";
-import { CircleNotch } from "@phosphor-icons/react/dist/ssr";
+import { Appointment, AppointmentResponse } from "./interfaces";
+
+type RenderContent = "appointmentDetails" | "appointmentForm" | "timeStamps";
 
 export function MySchedule() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [appointment, setAppointment] = useState<Appointment | null>(null);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [renderContent, setRenderContent] =
+    useState<RenderContent>("timeStamps");
 
   const { toISO } = useFormat();
 
@@ -78,12 +80,12 @@ export function MySchedule() {
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
     setAppointment(null);
-    setShowForm(false);
+    setRenderContent("timeStamps");
   };
 
   const handleTimeSelect = (time: string) => {
     setSelectedTime(time);
-    setShowForm(true);
+    console.log(">>>", appointments);
 
     if (appointments.length > 0) {
       const matchingAppointment = appointments.find(
@@ -94,16 +96,27 @@ export function MySchedule() {
           )
       );
 
+      console.log('selectedDate', selectedDate);
+      
+      if (!matchingAppointment) {
+        setRenderContent("appointmentForm");
+      }
+
+      if (matchingAppointment) {
+        setRenderContent("appointmentDetails");
+      }
+
       setAppointment(matchingAppointment || null);
     }
   };
 
   const handleBack = () => {
+    setRenderContent("timeStamps");
+
     if (selectedDate) {
       fetchAppointments(selectedDate);
     }
     setSelectedTime(null);
-    setShowForm(false);
   };
 
   const mappedAppointments = appointments.map((appointment) => ({
@@ -122,24 +135,12 @@ export function MySchedule() {
           <h1 className="font-bold text-2xl md:text-3xl mb-8 text-zinc-700">
             Minha agenda
           </h1>
-          {loading && (
-            <div className="flex items-center gap-1 animate-pulse">
-              <CircleNotch className="size-6 text-zinc-500 animate-spin" />
-              <span className="text-zinc-500">Carregando...</span>
-            </div>
-          )}
         </div>
 
-        <div className="flex gap-8">
+        <div className="flex flex-col gap-8 lg:flex-row">
           <Calendar onDateSelect={handleDateSelect} />
 
-          {showForm && !appointment ? (
-            <AppointmentForm
-              selectedDate={selectedDate}
-              selectedTime={selectedTime}
-              onBack={handleBack}
-            />
-          ) : (
+          {renderContent === "timeStamps" && (
             <TimeStamps
               onTimeSelect={handleTimeSelect}
               selectedDate={selectedDate}
@@ -147,9 +148,19 @@ export function MySchedule() {
               isLoading={loading}
             />
           )}
-        </div>
 
-        {appointment && <AppointmentDetails appointment={appointment} />}
+          {renderContent === "appointmentForm" && (
+            <AppointmentForm
+              selectedDate={selectedDate}
+              selectedTime={selectedTime}
+              onBack={handleBack}
+            />
+          )}
+
+          {renderContent === "appointmentDetails" && appointment && (
+            <AppointmentDetails appointment={appointment} onBack={handleBack} />
+          )}
+        </div>
       </div>
     </section>
   );

@@ -106,6 +106,7 @@ export function FormLogin() {
         />
         <ErrorMessage error={errors.email?.message} />
       </div>
+
       <div className="flex flex-col pb-8">
         <label htmlFor="password" className="sr-only">
           Senha
@@ -126,6 +127,7 @@ export function FormLogin() {
         />
         <ErrorMessage error={errors.password?.message} />
       </div>
+      
       <button
         type="submit"
         className={twMerge(
