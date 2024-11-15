@@ -56,7 +56,7 @@ export function AppointmentDetails({
   };
 
   return (
-    <div className="flex-1 flex flex-col py-8 px-6 bg-zinc-100/80">
+    <div className="flex flex-col py-8 px-6 bg-zinc-100/80">
       <div className="flex items-center justify-between mb-4">
         <h2 className="font-semibold text-lg">Detalhes do Agendamento</h2>
 

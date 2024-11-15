@@ -126,7 +126,7 @@ export function AppointmentForm({
   };
 
   return (
-    <div className="flex-1">
+    <div className="">
       <h2 className="text-xl font-bold mb-6"> Cadastro de Agendamento</h2>
       <p className="mb-6">
         Cadastrar agendamento para dia{" "}
@@ -148,7 +148,7 @@ export function AppointmentForm({
 
       <form
         onSubmit={handleSubmit(onSubmitForm)}
-        className="w-full max-w-[400px] flex flex-col"
+        className="w-full flex flex-col"
       >
         <div className="pb-8">
           <label htmlFor="name" className="block text-zinc-600 mb-2">
