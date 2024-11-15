@@ -45,7 +45,7 @@ export function TimeStamps({
           new Date(appointment.cliente.data_agendamento)
             .toISOString()
             .split("T")[0] &&
-        appointment.status !== "cancelado" 
+        appointment.status !== "cancelado"
     );
 
     return {
@@ -80,17 +80,18 @@ export function TimeStamps({
   };
 
   return (
-    <div className="flex-1 grid grid-cols-2 gap-3">
+    <div className="grid grid-cols-2 gap-3">
       {updatedHours.map(({ hour, client }) => (
         <button
           key={hour}
           onClick={() => handleTimeClick(hour)}
           className={twMerge(
-            "flex items-center justify-center bg-green-200 text-sky-800 px-5 rounded-lg hover:bg-green-300 transition lg: gap-2 lg:justify-start disabled:text-zinc-400 disabled:bg-zinc-100",
-            client === "Livre"
-              ? ""
-              : "bg-sky-200 hover:bg-sky-300 focus-visible:border",
-            isLoading ? "animate-pulse" : ""
+            "flex items-center justify-center px-5 py-3 rounded-lg transition lg:gap-2 lg:justify-start disabled:text-zinc-400 disabled:bg-zinc-100",
+            isLoading
+              ? "bg-zinc-100 text-zinc-400 animate-pulse"
+              : client === "Livre"
+              ? "bg-green-200 hover:bg-green-300"
+              : "bg-sky-200 text-sky-800 hover:bg-sky-300 focus-visible:border"
           )}
           title={
             client === "Livre"

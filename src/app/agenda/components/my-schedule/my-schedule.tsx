@@ -85,28 +85,20 @@ export function MySchedule() {
 
   const handleTimeSelect = (time: string) => {
     setSelectedTime(time);
-    console.log(">>>", appointments);
 
-    if (appointments.length > 0) {
-      const matchingAppointment = appointments.find(
-        (appointment) =>
-          appointment.agendamento.hora_inicio === time &&
-          appointment.agendamento.data_agendamento.startsWith(
-            selectedDate?.toISOString().split("T")[0] || ""
-          )
-      );
+    const matchingAppointment = appointments.find(
+      (appointment) =>
+        appointment.agendamento.hora_inicio === time &&
+        appointment.agendamento.data_agendamento.startsWith(
+          selectedDate?.toISOString().split("T")[0] || ""
+        )
+    );
 
-      console.log('selectedDate', selectedDate);
-      
-      if (!matchingAppointment) {
-        setRenderContent("appointmentForm");
-      }
-
-      if (matchingAppointment) {
-        setRenderContent("appointmentDetails");
-      }
-
-      setAppointment(matchingAppointment || null);
+    if (!matchingAppointment) {
+      setRenderContent("appointmentForm");
+    } else {
+      setAppointment(matchingAppointment);
+      setRenderContent("appointmentDetails");
     }
   };
 
@@ -137,7 +129,7 @@ export function MySchedule() {
           </h1>
         </div>
 
-        <div className="flex flex-col gap-8 lg:flex-row">
+        <div className="grid grid-cols-2 gap-8 lg:flex-row">
           <Calendar onDateSelect={handleDateSelect} />
 
           {renderContent === "timeStamps" && (
