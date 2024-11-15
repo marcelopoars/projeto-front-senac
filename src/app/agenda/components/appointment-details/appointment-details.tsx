@@ -18,6 +18,10 @@ export function AppointmentDetails({
 }: AppointmentDetailsProps) {
   const { toLongDate, formatHour } = useFormat();
   const [loading, setLoading] = useState(false);
+  const [feedbackMessage, setFeedbackMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
   const whatsAppUrl = useCallback(
     (name: string, date: string, hour: string) => {
@@ -39,16 +43,23 @@ export function AppointmentDetails({
 
   const deleteAppointment = async () => {
     setLoading(true);
+    setFeedbackMessage(null);
 
     try {
-      const res = await api.delete(`/agendamentos/${agendamento.id}`, {
+      const response = await api.delete(`/agendamentos/${agendamento.id}`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },
       });
 
-      console.log("Status do agendamento atualizado!", res.data);
-    } catch (error) {
+      setFeedbackMessage({ type: "success", text: "Agendamento cancelado!" });
+
+      console.log("Status do agendamento atualizado!", response.data);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      const message =
+        error.response?.data?.message || "Erro ao cancelar o agendamento.";
+      setFeedbackMessage({ type: "error", text: message });
       console.error("Erro ao cancelar o agendamento!", error);
     } finally {
       setLoading(false);
@@ -89,6 +100,19 @@ export function AppointmentDetails({
         </p>
       </div>
 
+      {feedbackMessage && (
+        <div
+          className={twMerge(
+            "mt-6 text-lg font-bold",
+            feedbackMessage.type === "success"
+              ? "text-green-500"
+              : "text-red-500"
+          )}
+        >
+          {feedbackMessage.text}
+        </div>
+      )}
+
       <div className="grid gap-6 mt-auto pt-8 md:grid-cols-2">
         <button
           type="button"
@@ -101,19 +125,21 @@ export function AppointmentDetails({
         >
           <CaretLeft className="absolute size-6" /> Voltar
         </button>
-        <button
-          onClick={deleteAppointment}
-          className="relative bg-red-500 text-white font-semibold p-3 rounded-lg hover:bg-red-700 transition"
-          disabled={loading}
-        >
-          {loading ? (
-            <span className="loader">Cancelando...</span>
-          ) : (
-            <>
-              <Trash className="absolute size-6" /> Cancelar agendamento
-            </>
-          )}
-        </button>
+        {!feedbackMessage && (
+          <button
+            onClick={deleteAppointment}
+            className="relative bg-red-500 text-white font-semibold p-3 rounded-lg hover:bg-red-700 transition disabled:bg-red-300"
+            disabled={loading}
+          >
+            {loading ? (
+              <span className="loader">Cancelando...</span>
+            ) : (
+              <>
+                <Trash className="absolute size-6" /> Cancelar agendamento
+              </>
+            )}
+          </button>
+        )}
       </div>
     </div>
   );
