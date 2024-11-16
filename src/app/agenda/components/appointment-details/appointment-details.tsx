@@ -1,11 +1,12 @@
 import { useFormat } from "@/hooks";
+import { api } from "@/lib";
 import { CaretLeft, Trash, WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
 import { useCallback, useState } from "react";
-import { api } from "@/lib";
 
-import { Appointment } from "../my-schedule/interfaces";
 import { normalizePhoneNumber } from "@/utils";
+import { isBefore, parse, set } from "date-fns";
 import { twMerge } from "tailwind-merge";
+import { Appointment } from "../my-schedule/interfaces";
 
 interface AppointmentDetailsProps {
   appointment: Appointment;
@@ -18,6 +19,10 @@ export function AppointmentDetails({
 }: AppointmentDetailsProps) {
   const { toLongDate, formatHour } = useFormat();
   const [loading, setLoading] = useState(false);
+  const [feedbackMessage, setFeedbackMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
   const whatsAppUrl = useCallback(
     (name: string, date: string, hour: string) => {
@@ -39,21 +44,45 @@ export function AppointmentDetails({
 
   const deleteAppointment = async () => {
     setLoading(true);
+    setFeedbackMessage(null);
 
     try {
-      const res = await api.delete(`/agendamentos/${agendamento.id}`, {
+      const response = await api.delete(`/agendamentos/${agendamento.id}`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },
       });
 
-      console.log("Status do agendamento atualizado!", res.data);
-    } catch (error) {
+      setFeedbackMessage({ type: "success", text: "Agendamento cancelado!" });
+
+      console.log("Status do agendamento atualizado!", response.data);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      const message =
+        error.response?.data?.message || "Erro ao cancelar o agendamento.";
+      setFeedbackMessage({ type: "error", text: message });
       console.error("Erro ao cancelar o agendamento!", error);
     } finally {
       setLoading(false);
     }
   };
+
+  const isPastHour = (hour: string): boolean => {
+    if (!agendamento.data_agendamento) return false;
+
+    const selectedHour = parse(hour, "HH:mm:ss", new Date());
+
+    const buttonTime = set(agendamento.data_agendamento, {
+      hours: selectedHour.getHours(),
+      minutes: selectedHour.getMinutes(),
+      seconds: 0,
+      milliseconds: 0,
+    });
+
+    return isBefore(buttonTime, new Date());
+  };
+
+  console.log(isPastHour(agendamento.hora_inicio));
 
   return (
     <div className="flex flex-col py-8 px-6 bg-zinc-100/80">
@@ -89,11 +118,24 @@ export function AppointmentDetails({
         </p>
       </div>
 
+      {feedbackMessage && (
+        <div
+          className={twMerge(
+            "mt-6 text-lg font-bold",
+            feedbackMessage.type === "success"
+              ? "text-green-500"
+              : "text-red-500"
+          )}
+        >
+          {feedbackMessage.text}
+        </div>
+      )}
+
       <div className="grid gap-6 mt-auto pt-8 md:grid-cols-2">
         <button
           type="button"
           className={twMerge(
-            "relative bg-sky-200 text-center font-semibold p-3 rounded-lg hover:bg-sky-300  transition",
+            "relative bg-sky-200 text-center font-semibold p-3 rounded-lg hover:bg-sky-300 transition",
             false ? "disabled:bg-slate-300" : ""
           )}
           onClick={onBack}
@@ -101,19 +143,22 @@ export function AppointmentDetails({
         >
           <CaretLeft className="absolute size-6" /> Voltar
         </button>
-        <button
-          onClick={deleteAppointment}
-          className="relative bg-red-500 text-white font-semibold p-3 rounded-lg hover:bg-red-700 transition"
-          disabled={loading}
-        >
-          {loading ? (
-            <span className="loader">Cancelando...</span>
-          ) : (
-            <>
-              <Trash className="absolute size-6" /> Cancelar agendamento
-            </>
-          )}
-        </button>
+        {!feedbackMessage && !isPastHour(agendamento.hora_inicio) && (
+          <button
+            onClick={deleteAppointment}
+            className="relative bg-red-500 text-white font-semibold p-3 rounded-lg hover:bg-red-700 transition disabled:bg-red-300"
+            disabled={loading}
+          >
+            {loading ? (
+              <span className="loader">Cancelando...</span>
+            ) : (
+              <>
+                <Trash className="absolute size-6" />
+                <span className="">Cancelar agendamento</span>
+              </>
+            )}
+          </button>
+        )}
       </div>
     </div>
   );
