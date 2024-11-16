@@ -86,7 +86,7 @@ export function TimeStamps({
           key={hour}
           onClick={() => handleTimeClick(hour)}
           className={twMerge(
-            "flex items-center justify-center px-5 py-3 rounded-lg transition lg:gap-2 lg:justify-start disabled:text-zinc-400 disabled:bg-zinc-100",
+            "min-h-12 flex items-center justify-center px-5 py-3 rounded-lg transition lg:gap-2 lg:justify-start disabled:text-zinc-400 disabled:bg-zinc-100",
             isLoading
               ? "bg-zinc-100 text-zinc-400 animate-pulse"
               : client === "Livre"
