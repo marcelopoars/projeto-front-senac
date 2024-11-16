@@ -43,6 +43,12 @@ const signUpFormSchema = z.object({
   confirmPassword: z
     .string()
     .min(1, { message: "Por favor, insira a confirmação da senha." }),
+  social_media: z
+    .string()
+    .min(1, { message: "Insira sua midia social." }),
+  site: z
+    .string()
+    .min(1, { message: "Insira seu Web Site." }),
 });
 
 type SignUpFormInputs = z.infer<typeof signUpFormSchema>;
@@ -66,6 +72,8 @@ export function FormSignUp() {
       phone: "",
       cpfOrCnpj: "",
       category: "",
+      social_media: "",
+      site: "",
       description: "",
       password: "",
       confirmPassword: "",
@@ -78,6 +86,8 @@ export function FormSignUp() {
       email,
       phone,
       cpfOrCnpj,
+      social_media,
+      site,
       password,
       confirmPassword,
       category,
@@ -93,8 +103,8 @@ export function FormSignUp() {
       servico: "Criação de sites e aplicações",
       logo_base64:
         "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...base64string",
-      social_media: "https://www.linkedin.com/in/marcelopoars/",
-      website: "https://www.marcelopereira.dev/",
+      social_media: social_media,
+      website: site,
       cidade: "Porto Alegre",
       estado: {
         nome: "Rio Grande do Sul",
@@ -267,6 +277,38 @@ export function FormSignUp() {
           <option value="Outros">Outros</option>
         </select>
         <ErrorMessage error={errors.category?.message} />
+      </div>
+
+      <div className="pb-8">
+        <label htmlFor="social_media" className="sr-only">
+          Midia Social
+        </label>
+        <input
+          id="social_media"
+          className="w-full border p-3 rounded-lg"
+          placeholder="Insira seu social_media"
+          aria-describedby={
+            errors.social_media ? "social_media-error" : undefined
+          }
+          {...register("social_media")}
+        />
+        <ErrorMessage error={errors.social_media?.message} />
+      </div>
+
+      <div className="pb-8">
+        <label htmlFor="site" className="sr-only">
+          Insira seu Site
+        </label>
+        <input
+          id="site"
+          className="w-full border p-3 rounded-lg"
+          placeholder="Insira seu site"
+          aria-describedby={
+            errors.site ? "site-error" : undefined
+          }
+          {...register("site")}
+        />
+        <ErrorMessage error={errors.site?.message} />
       </div>
 
       <div className="pb-8">
