@@ -8,27 +8,55 @@ import { Calendar } from "../calendar";
 import { TimeStamps } from "../timestamps";
 
 import { AppointmentDetails } from "../appointment-details";
-import { Appointment, AppointmentResponse } from "./interfaces";
 import { AppointmentForm } from "../appointment-form";
+import { Appointment, AppointmentResponse } from "./interfaces";
+import { isWeekend } from "date-fns";
+
+type RenderContent = "appointmentDetails" | "appointmentForm" | "timeStamps";
 
 export function MySchedule() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
   const [appointment, setAppointment] = useState<Appointment | null>(null);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [renderContent, setRenderContent] =
+    useState<RenderContent>("timeStamps");
 
   const { toISO } = useFormat();
 
+  const getAuthTokenFromCookies = () => {
+    const cookieString = document.cookie;
+    const cookies = cookieString
+      .split("; ")
+      .reduce((acc: Record<string, string>, cookie) => {
+        const [name, value] = cookie.split("=");
+        acc[name] = value;
+        return acc;
+      }, {});
+    return cookies.authToken || null;
+  };
+
   const fetchAppointments = async (date: Date) => {
     const formattedDate = toISO(date);
+    const providerId = localStorage.getItem("providerId");
+    const token = getAuthTokenFromCookies();
+
+    if (!providerId || !token) {
+      console.error("Usuário não autenticado.");
+      return;
+    }
 
     setLoading(true);
 
     try {
       const response = await api.get<AppointmentResponse>(
-        `/gestao/api/management/agendamentos/53/${formattedDate}/${formattedDate}`
+        `/agendamentos/${providerId}/${formattedDate}/${formattedDate}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setAppointments(response.data.agendamentos);
     } catch (error) {
@@ -42,6 +70,7 @@ export function MySchedule() {
     if (selectedDate) {
       fetchAppointments(selectedDate);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDate]);
 
   useEffect(() => {
@@ -52,32 +81,35 @@ export function MySchedule() {
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
     setAppointment(null);
-    setShowForm(false);
+    setRenderContent("timeStamps");
   };
 
   const handleTimeSelect = (time: string) => {
     setSelectedTime(time);
-    setShowForm(true);
 
-    if (appointments.length > 0) {
-      const matchingAppointment = appointments.find(
-        (appointment) =>
-          appointment.agendamento.hora_inicio === time &&
-          appointment.agendamento.data_agendamento.startsWith(
-            selectedDate?.toISOString().split("T")[0] || ""
-          )
-      );
+    const matchingAppointment = appointments.find(
+      (appointment) =>
+        appointment.agendamento.hora_inicio === time &&
+        appointment.agendamento.data_agendamento.startsWith(
+          selectedDate?.toISOString().split("T")[0] || ""
+        )
+    );
 
-      setAppointment(matchingAppointment || null);
+    if (!matchingAppointment) {
+      setRenderContent("appointmentForm");
+    } else {
+      setAppointment(matchingAppointment);
+      setRenderContent("appointmentDetails");
     }
   };
 
   const handleBack = () => {
+    setRenderContent("timeStamps");
+
     if (selectedDate) {
       fetchAppointments(selectedDate);
     }
     setSelectedTime(null);
-    setShowForm(false);
   };
 
   const mappedAppointments = appointments.map((appointment) => ({
@@ -86,7 +118,12 @@ export function MySchedule() {
       nome: appointment.cliente.nome,
       data_agendamento: appointment.agendamento.data_agendamento,
     },
+    status: appointment.agendamento.status,
   }));
+
+  const isWeekendDate = (date: Date | null): boolean => {
+    return date ? isWeekend(date) : false;
+  };
 
   return (
     <section className="h-full">
@@ -95,30 +132,43 @@ export function MySchedule() {
           <h1 className="font-bold text-2xl md:text-3xl mb-8 text-zinc-700">
             Minha agenda
           </h1>
-          {loading && (
-            <span className="text-zinc-600 animate-pulse">Carregando...</span>
-          )}
         </div>
 
-        <div className="flex gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:flex-row">
           <Calendar onDateSelect={handleDateSelect} />
 
-          {showForm && !appointment ? (
+          {renderContent === "timeStamps" && (
+            <>
+              {isWeekendDate(selectedDate) ? (
+                <div className="flex items-center justify-center">
+                  <p className="text-xl text-zinc-500 text-center text-balance">
+                    Os agendamentos não estão disponíveis aos finais de semana.
+                    Por favor, selecione um dia útil.
+                  </p>
+                </div>
+              ) : (
+                <TimeStamps
+                  onTimeSelect={handleTimeSelect}
+                  selectedDate={selectedDate}
+                  appointments={mappedAppointments}
+                  isLoading={loading}
+                />
+              )}
+            </>
+          )}
+
+          {renderContent === "appointmentForm" && (
             <AppointmentForm
               selectedDate={selectedDate}
               selectedTime={selectedTime}
               onBack={handleBack}
             />
-          ) : (
-            <TimeStamps
-              onTimeSelect={handleTimeSelect}
-              selectedDate={selectedDate}
-              appointments={mappedAppointments}
-            />
+          )}
+
+          {renderContent === "appointmentDetails" && appointment && (
+            <AppointmentDetails appointment={appointment} onBack={handleBack} />
           )}
         </div>
-
-        {appointment && <AppointmentDetails appointment={appointment} />}
       </div>
     </section>
   );

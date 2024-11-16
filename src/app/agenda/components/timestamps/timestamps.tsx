@@ -1,14 +1,16 @@
 import { useFormat } from "@/hooks";
-import { isBefore, startOfDay } from "date-fns";
+import { isBefore, parse, set } from "date-fns";
 import { useEffect } from "react";
 import { twMerge } from "tailwind-merge";
 
 interface TimeStampsProps {
   onTimeSelect: (time: string) => void;
   selectedDate: Date | null;
+  isLoading: boolean;
   appointments: {
     hora_inicio: string;
     cliente: { nome: string; data_agendamento: string };
+    status: string;
   }[];
 }
 
@@ -29,6 +31,7 @@ export function TimeStamps({
   onTimeSelect,
   selectedDate,
   appointments,
+  isLoading,
 }: TimeStampsProps) {
   const { formatHour } = useFormat();
 
@@ -41,7 +44,8 @@ export function TimeStamps({
         selectedDate?.toISOString().split("T")[0] ===
           new Date(appointment.cliente.data_agendamento)
             .toISOString()
-            .split("T")[0]
+            .split("T")[0] &&
+        appointment.status !== "cancelado"
     );
 
     return {
@@ -60,33 +64,48 @@ export function TimeStamps({
     }
   };
 
-  const isPastDate = selectedDate
-    ? isBefore(selectedDate, startOfDay(new Date()))
-    : false;
+  const isPastHour = (hour: string): boolean => {
+    if (!selectedDate) return false;
+
+    const selectedHour = parse(hour, "HH:mm:ss", new Date());
+
+    const buttonTime = set(selectedDate, {
+      hours: selectedHour.getHours(),
+      minutes: selectedHour.getMinutes(),
+      seconds: 0,
+      milliseconds: 0,
+    });
+
+    return isBefore(buttonTime, new Date());
+  };
 
   return (
-    <div className="flex-1 grid grid-cols-2 gap-3">
+    <div className="grid grid-cols-2 gap-3">
       {updatedHours.map(({ hour, client }) => (
         <button
           key={hour}
           onClick={() => handleTimeClick(hour)}
           className={twMerge(
-            "flex items-center justify-center  bg-green-200 text-sky-800 px-5 rounded-lg hover:bg-green-300 transition lg: gap-2 lg:justify-start disabled:text-zinc-400 disabled:bg-zinc-100",
-            client === "Livre"
-              ? ""
-              : "bg-sky-200 hover:bg-sky-300 focus-visible:border"
+            "min-h-12 flex items-center justify-center px-5 py-3 rounded-lg transition lg:gap-2 lg:justify-start disabled:text-zinc-400 disabled:bg-zinc-100",
+            isLoading
+              ? "bg-zinc-100 text-zinc-400 animate-pulse"
+              : client === "Livre"
+              ? "bg-green-200 hover:bg-green-300"
+              : "bg-sky-200 text-sky-800 hover:bg-sky-300 focus-visible:border"
           )}
           title={
             client === "Livre"
-              ? "Ciique para agendar"
+              ? "Clique para agendar"
               : "Ver detalhes do agendamento"
           }
-          disabled={isPastDate && client === "Livre"}
+          disabled={(isPastHour(hour) && client === "Livre") || isLoading}
         >
-          <span className="font-bold">{formatHour(hour)}</span>
-          <span className="hidden lg:block">
-            - {isPastDate && client === "Livre" ? "" : client}
-          </span>
+          {!isLoading && <span className="font-bold">{formatHour(hour)}</span>}
+          {!isLoading && (
+            <span className="hidden lg:block">
+              - {isPastHour(hour) && client === "Livre" ? "" : client}
+            </span>
+          )}
         </button>
       ))}
     </div>
