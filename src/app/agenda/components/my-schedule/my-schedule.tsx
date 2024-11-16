@@ -129,7 +129,7 @@ export function MySchedule() {
           </h1>
         </div>
 
-        <div className="grid grid-cols-2 gap-8 lg:flex-row">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:flex-row">
           <Calendar onDateSelect={handleDateSelect} />
 
           {renderContent === "timeStamps" && (

@@ -153,7 +153,7 @@ export function AppointmentDetails({
               <span className="loader">Cancelando...</span>
             ) : (
               <>
-                <Trash className="absolute size-6" />
+                <Trash className="absolute size-6 hidden xl:block" />
                 <span className="">Cancelar agendamento</span>
               </>
             )}
