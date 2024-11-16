@@ -141,7 +141,10 @@ export function MySchedule() {
             <>
               {isWeekendDate(selectedDate) ? (
                 <div className="flex items-center justify-center">
-                  <p className="text-2xl text-zinc-500">Você não tem agenda neste dia.</p>
+                  <p className="text-xl text-zinc-500 text-center text-balance">
+                    Os agendamentos não estão disponíveis aos finais de semana.
+                    Por favor, selecione um dia útil.
+                  </p>
                 </div>
               ) : (
                 <TimeStamps
