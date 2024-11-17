@@ -1,177 +1,95 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { CircleNotch } from "@phosphor-icons/react/dist/ssr";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { twMerge } from "tailwind-merge";
 import { z } from "zod";
 
 import { ErrorMessage } from "@/components";
-import { normalizeCpfOrCnpj, normalizePhoneNumber } from "@/utils";
 import { api } from "@/lib";
-
-const signUpFormSchema = z.object({
-  name: z.string().min(1, { message: "Por favor, insira o seu nome." }),
-  email: z
-    .string()
-    .min(1, { message: "O campo de email é obrigatório." })
-    .email({
-      message: "Insira um endereço de email válido, ex: nome@dominio.com.",
-    }),
-  phone: z
-    .string()
-    .min(14, { message: "Por favor, insira um número de telefone válido." }),
-  cpfOrCnpj: z
-    .string()
-    .min(1, { message: "O CPF ou CNPJ é obrigatório para o cadastro." })
-    .refine(
-      (value) => {
-        const cleanedValue = value.replace(/\D/g, "");
-        return cleanedValue.length === 14 || cleanedValue.length === 18;
-      },
-      {
-        message: "O CPF deve ter 11 digitos e o CNPJ deve ter 14 dígitos.",
-      }
-    ),
-  category: z
-    .string()
-    .min(1, { message: "Por favor, selecione uma categoria." }),
-  description: z
-    .string()
-    .min(1, { message: "Descreva seus serviços para completar o cadastro." }),
-  password: z.string().min(1, { message: "Por favor, insira sua senha." }),
-  confirmPassword: z
-    .string()
-    .min(1, { message: "Por favor, insira a confirmação da senha." }),
-  social_media: z
-    .string()
-    .min(1, { message: "Insira sua midia social." }),
-  site: z
-    .string()
-    .min(1, { message: "Insira seu Web Site." }),
-});
+import { normalizeCpfOrCnpj, normalizePhoneNumber } from "@/utils";
+import { signUpFormSchema } from "./sign-up-form-schema";
+import { workRhythm } from "./work-rhythm";
 
 type SignUpFormInputs = z.infer<typeof signUpFormSchema>;
 
 export function FormSignUp() {
-  const router = useRouter();
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [apiError, setApiError] = useState<string | null>(null);
 
   const {
     register,
     handleSubmit,
     watch,
+    reset,
     setValue,
     setError,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isSubmitting },
   } = useForm<SignUpFormInputs>({
     mode: "onTouched",
     resolver: zodResolver(signUpFormSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      phone: "",
-      cpfOrCnpj: "",
-      category: "",
-      social_media: "",
-      site: "",
-      description: "",
-      password: "",
-      confirmPassword: "",
-    },
   });
 
   const onSubmitForm: SubmitHandler<SignUpFormInputs> = async (data) => {
-    const {
-      name,
-      email,
-      phone,
-      cpfOrCnpj,
-      social_media,
-      site,
-      password,
-      confirmPassword,
-      category,
-    } = data;
+    try {
+      if (data.password !== data.confirmPassword) {
+        setError("confirmPassword", {
+          type: "manual",
+          message: "As senhas não coincidem.",
+        });
+        return;
+      }
 
-    const newProvider = {
-      nome: name,
-      email: email,
-      senha: password,
-      telefone: phone,
-      cpf_cnpj: cpfOrCnpj,
-      atividade: "Desenvolvedor de Software",
-      servico: "Criação de sites e aplicações",
-      logo_base64:
-        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...base64string",
-      social_media: social_media,
-      website: site,
-      cidade: "Porto Alegre",
-      estado: {
-        nome: "Rio Grande do Sul",
-        sigla: "RS",
-      },
-      ritmo_trabalho: [
-        {
-          dia_semana: "segunda",
-          hora_inicio: "08:00:00",
-          hora_fim: "18:00:00",
-        },
-        {
-          dia_semana: "terça",
-          hora_inicio: "08:00:00",
-          hora_fim: "18:00:00",
-        },
-        {
-          dia_semana: "quarta",
-          hora_inicio: "08:00:00",
-          hora_fim: "18:00:00",
-        },
-        {
-          dia_semana: "quinta",
-          hora_inicio: "08:00:00",
-          hora_fim: "18:00:00",
-        },
-        {
-          dia_semana: "sexta",
-          hora_inicio: "08:00:00",
-          hora_fim: "18:00:00",
-        },
-      ],
-      categoria_id: Number(category),
-      subcategoria_id: 2,
-      tipo_agenda: null,
-    };
+      const cleanedPhone = data.phone.replace(/\D/g, "");
+      const cleanedCpfOrCnpj = data.cpfOrCnpj.replace(/\D/g, "");
 
-    const response = await api.post(
-      "/gestao/api/management/register",
-      newProvider
-    );
+      const newProvider = {
+        nome: data.name,
+        email: data.email,
+        senha: data.password,
+        telefone: cleanedPhone,
+        cpf_cnpj: cleanedCpfOrCnpj,
+        categoria_id: Number(data.category),
+        subcategoria_id: Number(data.category),
+        atividade: "null",
+        servico: data.description,
+        logo_base64:
+          "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...base64string",
+        social_media: data.socialMedia,
+        website: data.website,
+        cidade: "Porto Alegre",
+        estado: {
+          nome: "Rio Grande do Sul",
+          sigla: "RS",
+        },
+        ritmo_trabalho: workRhythm,
+        tipo_agenda: null,
+      };
 
-    if (password !== confirmPassword) {
-      setError("confirmPassword", {
-        type: "manual",
-        message: "As senhas não coincidem.",
-      });
-      return;
+      const response = await api.post("/register", newProvider);
+
+      if (response.status === 201 || response.status === 200) {
+        setSuccessMessage("Prestador cadastrado com sucesso!");
+        setApiError(null);
+        reset();
+
+        // setTimeout(() => setSuccessMessage(null), 3000);
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.error(error);
+      setApiError(
+        error.response?.data?.message ||
+          "Erro ao cadastrar o prestador. Tente novamente."
+      );
+      setSuccessMessage(null);
     }
-
-    const cleanedPhone = data.phone.replace(/\D/g, "");
-    const cleanedCpfOrCnpj = data.cpfOrCnpj.replace(/\D/g, "");
-
-    const cleanedData = {
-      ...data,
-      phone: cleanedPhone,
-      cpfOrCnpj: cleanedCpfOrCnpj,
-    };
-
-    console.log(cleanedData);
-
-    // router.push("/prestador");
   };
 
   const data = watch();
-
-  const { phone, cpfOrCnpj, password, confirmPassword } = data;
+  const { phone, cpfOrCnpj } = data;
 
   useEffect(() => {
     if (phone) setValue("phone", normalizePhoneNumber(phone));
@@ -181,80 +99,97 @@ export function FormSignUp() {
   return (
     <form
       onSubmit={handleSubmit(onSubmitForm)}
-      className="flex flex-col max-w-[400px]"
+      className="w-full flex flex-col max-w-[640px]"
     >
-      <div className="pb-8">
-        <label htmlFor="name" className="sr-only">
-          Nome
-        </label>
-        <input
-          className={`w-full border p-3 rounded-lg ${
-            errors.name ? "border-red-500" : ""
-          }`}
-          id="name"
-          type="text"
-          placeholder="Nome"
-          autoComplete="name"
-          {...register("name")}
-        />
-        <ErrorMessage error={errors.name?.message} />
+      {successMessage && (
+        <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-lg">
+          {successMessage}
+        </div>
+      )}
+
+      {apiError && (
+        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg">
+          {apiError}
+        </div>
+      )}
+
+      <div className="grid gap-6 md:grid-cols-2">
+        <div className="pb-8">
+          <label htmlFor="name" className="sr-only">
+            Nome
+          </label>
+          <input
+            className={`w-full border p-3 rounded-lg ${
+              errors.name ? "border-red-500" : ""
+            }`}
+            id="name"
+            type="text"
+            placeholder="Nome"
+            autoComplete="name"
+            {...register("name")}
+          />
+          <ErrorMessage error={errors.name?.message} />
+        </div>
+
+        <div className="pb-8">
+          <label htmlFor="email" className="sr-only">
+            Email
+          </label>
+          <input
+            className={`w-full border p-3 rounded-lg ${
+              errors.email ? "border-red-500" : ""
+            }`}
+            id="email"
+            type="email"
+            placeholder="Email"
+            autoComplete="email"
+            aria-invalid={errors.email?.message ? "true" : "false"}
+            aria-describedby={errors.email?.message ? "email-error" : undefined}
+            {...register("email")}
+          />
+          <ErrorMessage error={errors.email?.message} />
+        </div>
       </div>
 
-      <div className="pb-8">
-        <label htmlFor="email" className="sr-only">
-          Email
-        </label>
-        <input
-          className={`w-full border p-3 rounded-lg ${
-            errors.email ? "border-red-500" : ""
-          }`}
-          id="email"
-          type="email"
-          placeholder="Email"
-          autoComplete="email"
-          aria-invalid={errors.email?.message ? "true" : "false"}
-          aria-describedby={errors.email?.message ? "email-error" : undefined}
-          {...register("email")}
-        />
-        <ErrorMessage error={errors.email?.message} />
-      </div>
-      <div className="pb-8">
-        <label htmlFor="phone" className="sr-only">
-          Telefone ou WhatsApp
-        </label>
-        <input
-          className={`w-full border p-3 rounded-lg ${
-            errors.phone ? "border-red-500" : ""
-          }`}
-          id="phone"
-          type="tel"
-          placeholder="Telefone / WhatsApp"
-          autoComplete="phone"
-          aria-describedby={errors.phone ? "phone-error" : undefined}
-          {...register("phone")}
-        />
-        <ErrorMessage error={errors.phone?.message} />
+      <div className="grid gap-6 md:grid-cols-2">
+        <div className="pb-8">
+          <label htmlFor="phone" className="sr-only">
+            Telefone ou WhatsApp
+          </label>
+          <input
+            className={`w-full border p-3 rounded-lg ${
+              errors.phone ? "border-red-500" : ""
+            }`}
+            id="phone"
+            type="tel"
+            placeholder="Telefone / WhatsApp"
+            autoComplete="phone"
+            aria-describedby={errors.phone ? "phone-error" : undefined}
+            {...register("phone")}
+          />
+          <ErrorMessage error={errors.phone?.message} />
+        </div>
+
+        <div className="pb-8">
+          <label htmlFor="cpfOrCnpj" className="sr-only">
+            CPF ou CNPJ
+          </label>
+          <input
+            className={`w-full border p-3 rounded-lg ${
+              errors.cpfOrCnpj ? "border-red-500" : ""
+            }`}
+            id="cpfOrCnpj"
+            type="text"
+            placeholder="CPF ou CNPJ"
+            autoComplete="off"
+            aria-describedby={errors.cpfOrCnpj ? "cpfOrCnpj-error" : undefined}
+            {...register("cpfOrCnpj")}
+          />
+          <ErrorMessage error={errors.cpfOrCnpj?.message} />
+        </div>
       </div>
 
-      <div className="pb-8">
-        <label htmlFor="cpfOrCnpj" className="sr-only">
-          CPF ou CNPJ
-        </label>
-        <input
-          className={`w-full border p-3 rounded-lg ${
-            errors.cpfOrCnpj ? "border-red-500" : ""
-          }`}
-          id="cpfOrCnpj"
-          type="text"
-          placeholder="CPF ou CNPJ"
-          autoComplete="off"
-          aria-describedby={errors.cpfOrCnpj ? "cpfOrCnpj-error" : undefined}
-          {...register("cpfOrCnpj")}
-        />
-        <ErrorMessage error={errors.cpfOrCnpj?.message} />
-      </div>
-
-      <div className="flex flex-col gap-2 pb-8">
+      <div className="flex flex-col pb-8">
         <label htmlFor="category" className="sr-only">
           Categoria
         </label>
@@ -280,44 +215,14 @@ export function FormSignUp() {
       </div>
 
       <div className="pb-8">
-        <label htmlFor="social_media" className="sr-only">
-          Midia Social
-        </label>
-        <input
-          id="social_media"
-          className="w-full border p-3 rounded-lg"
-          placeholder="Insira seu social_media"
-          aria-describedby={
-            errors.social_media ? "social_media-error" : undefined
-          }
-          {...register("social_media")}
-        />
-        <ErrorMessage error={errors.social_media?.message} />
-      </div>
-
-      <div className="pb-8">
-        <label htmlFor="site" className="sr-only">
-          Insira seu Site
-        </label>
-        <input
-          id="site"
-          className="w-full border p-3 rounded-lg"
-          placeholder="Insira seu site"
-          aria-describedby={
-            errors.site ? "site-error" : undefined
-          }
-          {...register("site")}
-        />
-        <ErrorMessage error={errors.site?.message} />
-      </div>
-
-      <div className="pb-8">
         <label htmlFor="description" className="sr-only">
           Descrição do serviço
         </label>
         <textarea
+          className={`w-full border p-3 rounded-lg ${
+            errors.description ? "border-red-500" : ""
+          }`}
           id="description"
-          className="w-full border p-3 rounded-lg"
           placeholder="Descreva aqui os seus serviços."
           aria-describedby={
             errors.description ? "description-error" : undefined
@@ -327,57 +232,114 @@ export function FormSignUp() {
         <ErrorMessage error={errors.description?.message} />
       </div>
 
-      <div className="pb-8">
-        <label htmlFor="password" className="sr-only">
-          Senha
-        </label>
-        <input
-          className={`w-full border p-3 rounded-lg ${
-            errors.password ? "border-red-500" : ""
-          }`}
-          id="password"
-          type="password"
-          placeholder="Senha"
-          autoComplete="current-password"
-          aria-invalid={errors.password?.message ? "true" : "false"}
-          aria-describedby={
-            errors.password?.message ? "password-error" : undefined
-          }
-          {...register("password")}
-        />
-        <ErrorMessage error={errors.password?.message} />
+      <div className="grid gap-6 md:grid-cols-2">
+        <div className="pb-8">
+          <label htmlFor="socialMedia" className="sr-only">
+            Midia Social
+          </label>
+          <input
+            className={`w-full border p-3 rounded-lg ${
+              errors.password ? "border-red-500" : ""
+            }`}
+            id="socialMedia"
+            type="url"
+            placeholder="Insira o link da sua rede social"
+            aria-describedby={
+              errors.socialMedia ? "socialMedia-error" : undefined
+            }
+            {...register("socialMedia")}
+          />
+          <ErrorMessage error={errors.socialMedia?.message} />
+        </div>
+
+        <div className="pb-8">
+          <label htmlFor="website" className="sr-only">
+            Insira seu Site
+          </label>
+          <input
+            className={`w-full border p-3 rounded-lg ${
+              errors.password ? "border-red-500" : ""
+            }`}
+            id="website"
+            type="url"
+            placeholder="Insira o link do seu site"
+            aria-describedby={errors.website ? "website-error" : undefined}
+            {...register("website")}
+          />
+          <ErrorMessage error={errors.website?.message} />
+        </div>
       </div>
 
-      <div className="pb-8">
-        <label htmlFor="confirmPassword" className="sr-only">
-          Confirmar senha
-        </label>
-        <input
-          className={`w-full border p-3 rounded-lg ${
-            errors.confirmPassword ? "border-red-500" : ""
-          }`}
-          id="confirmPassword"
-          type="password"
-          placeholder="Confirmar senha"
-          autoComplete="current-confirmPassword"
-          aria-invalid={errors.confirmPassword?.message ? "true" : "false"}
-          aria-describedby={
-            errors.confirmPassword?.message
-              ? "confirmPassword-error"
-              : undefined
-          }
-          {...register("confirmPassword")}
-        />
-        <ErrorMessage error={errors.confirmPassword?.message} />
+      <div className="grid gap-6 md:grid-cols-2">
+        <div className="pb-8">
+          <label htmlFor="password" className="sr-only">
+            Senha
+          </label>
+          <input
+            className={`w-full border p-3 rounded-lg ${
+              errors.password ? "border-red-500" : ""
+            }`}
+            id="password"
+            type="password"
+            placeholder="Senha"
+            autoComplete="current-password"
+            aria-invalid={errors.password?.message ? "true" : "false"}
+            aria-describedby={
+              errors.password?.message ? "password-error" : undefined
+            }
+            {...register("password")}
+          />
+          <ErrorMessage error={errors.password?.message} />
+        </div>
+
+        <div className="pb-8">
+          <label htmlFor="confirmPassword" className="sr-only">
+            Confirmar senha
+          </label>
+          <input
+            className={`w-full border p-3 rounded-lg ${
+              errors.confirmPassword ? "border-red-500" : ""
+            }`}
+            id="confirmPassword"
+            type="password"
+            placeholder="Confirmar senha"
+            autoComplete="current-confirmPassword"
+            aria-invalid={errors.confirmPassword?.message ? "true" : "false"}
+            aria-describedby={
+              errors.confirmPassword?.message
+                ? "confirmPassword-error"
+                : undefined
+            }
+            {...register("confirmPassword")}
+          />
+          <ErrorMessage error={errors.confirmPassword?.message} />
+        </div>
       </div>
 
-      <button
-        type="submit"
-        className="flex-1 bg-sky-500 p-3 rounded-lg text-white text-center font-semibold hover:bg-sky-600 disabled:bg-slate-300 transition"
-        disabled={!isValid}
-      >
-        Cadastrar
-      </button>
+      <div className="grid gap-6 md:grid-cols-2">
+        <button
+          type="button"
+          className="flex-1 bg-sky-200 p-3 rounded-lg text-center font-semibold hover:bg-sky-300 disabled:bg-slate-300 transition"
+          onClick={() => reset()}
+        >
+          Limpar
+        </button>
+
+        <button
+          type="submit"
+          className={twMerge(
+            "flex-1 flex justify-center items-center bg-sky-500 p-3 rounded-lg hover:bg-sky-600 transition",
+            !isValid ? "disabled:bg-slate-300" : ""
+          )}
+          disabled={!isValid || isSubmitting}
+        >
+          {isSubmitting ? (
+            <CircleNotch className="size-6 text-white/50 animate-spin" />
+          ) : (
+            <span className="text-white text-center font-semibold">Entrar</span>
+          )}
+        </button>
+      </div>
     </form>
   );
 }
