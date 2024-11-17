@@ -143,6 +143,7 @@ export function AppointmentDetails({
         >
           <CaretLeft className="absolute size-6" /> Voltar
         </button>
+        
         {!feedbackMessage && !isPastHour(agendamento.hora_inicio) && (
           <button
             onClick={deleteAppointment}
