@@ -17,7 +17,7 @@ export const signUpFormSchema = z.object({
     .refine(
       (value) => {
         const cleanedValue = value.replace(/\D/g, "");
-        return cleanedValue.length === 14 || cleanedValue.length === 18;
+        return cleanedValue.length === 11 || cleanedValue.length === 14;
       },
       {
         message: "O CPF ou CNPJ inválido.",
