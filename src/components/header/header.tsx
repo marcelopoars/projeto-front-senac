@@ -63,7 +63,7 @@ export function Header() {
           {!isLoggedIn ? (
             <>
               <Link
-                href="/prestadores"
+                href="/login"
                 className="text-sky-950 text-sm font-semibold rounded-lg py-2 px-3 md:text-base underline underline-offset-4 hover:opacity-85 border-l border-sky-800/40 transition"
               >
                 Entrar
