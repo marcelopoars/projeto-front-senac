@@ -12,9 +12,13 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/agenda", request.url));
   }
 
+  if (request.nextUrl.pathname.startsWith("/cadastro") && authToken) {
+    return NextResponse.redirect(new URL("/agenda", request.url));
+  }
+
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/agenda", "/login"],
+  matcher: ["/agenda", "/cadastro","/login"],
 };
