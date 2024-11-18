@@ -12,6 +12,7 @@ import { api } from "@/lib";
 import { normalizeCpfOrCnpj, normalizePhoneNumber } from "@/utils";
 import { signUpFormSchema } from "./sign-up-form-schema";
 import { workRhythm } from "./work-rhythm";
+import Link from "next/link";
 
 type SignUpFormInputs = z.infer<typeof signUpFormSchema>;
 
@@ -74,8 +75,6 @@ export function FormSignUp() {
         setSuccessMessage("Prestador cadastrado com sucesso!");
         setApiError(null);
         reset();
-
-        // setTimeout(() => setSuccessMessage(null), 3000);
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -102,8 +101,16 @@ export function FormSignUp() {
       className="w-full flex flex-col max-w-[640px]"
     >
       {successMessage && (
-        <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-lg">
-          {successMessage}
+        <div className="mb-4 ">
+          <p className="bg-green-100 text-green-700 p-3 rounded-lg">
+            {successMessage}{" "}
+            <Link
+              href="/login"
+              className="font-bold underline underline-offset-4"
+            >
+              Efetuar login
+            </Link>
+          </p>
         </div>
       )}
 
@@ -126,6 +133,7 @@ export function FormSignUp() {
             type="text"
             placeholder="Nome"
             autoComplete="name"
+            autoCapitalize="words"
             {...register("name")}
           />
           <ErrorMessage error={errors.name?.message} />
@@ -143,6 +151,7 @@ export function FormSignUp() {
             type="email"
             placeholder="Email"
             autoComplete="email"
+            inputMode="email"
             aria-invalid={errors.email?.message ? "true" : "false"}
             aria-describedby={errors.email?.message ? "email-error" : undefined}
             {...register("email")}
@@ -164,6 +173,7 @@ export function FormSignUp() {
             type="tel"
             placeholder="Telefone / WhatsApp"
             autoComplete="phone"
+            inputMode="tel"
             aria-describedby={errors.phone ? "phone-error" : undefined}
             {...register("phone")}
           />
