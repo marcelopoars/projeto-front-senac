@@ -26,7 +26,7 @@ export function AppointmentDetails({
 
   const whatsAppUrl = useCallback(
     (name: string, date: string, hour: string) => {
-      const phoneNumber = `55${cliente.telefone}`;
+      const phoneNumber = cliente.telefone;
 
       const message = encodeURIComponent(
         `Olá ${name}! \n\nGostaria de confirmar o seu agendamento para o dia ${toLongDate(
@@ -143,7 +143,7 @@ export function AppointmentDetails({
         >
           <CaretLeft className="absolute size-6" /> Voltar
         </button>
-        
+
         {!feedbackMessage && !isPastHour(agendamento.hora_inicio) && (
           <button
             onClick={deleteAppointment}

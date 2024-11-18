@@ -29,9 +29,13 @@ export function Header() {
 
   const handleLogoff = () => {
     document.cookie = "authToken=; max-age=0; path=/";
+
     localStorage.removeItem("userName");
+    localStorage.removeItem("providerId");
+
     setIsLoggedIn(false);
     setUserName(null);
+
     router.push("/login");
   };
 
@@ -43,11 +47,24 @@ export function Header() {
         </Link>
 
         <nav className="flex gap-3">
+          <Link
+            href="/"
+            className="text-sky-950 text-sm font-semibold rounded-lg py-2 px-3 md:text-base underline underline-offset-4 hover:opacity-85 transition"
+          >
+            Home
+          </Link>
+          <Link
+            href="/prestadores"
+            className="text-sky-950 text-sm font-semibold rounded-lg py-2 px-3 md:text-base underline underline-offset-4 hover:opacity-85 transition"
+          >
+            Prestadores
+          </Link>
+
           {!isLoggedIn ? (
             <>
               <Link
                 href="/login"
-                className="text-sky-950 text-sm font-semibold rounded-lg py-2 px-3 md:text-base underline underline-offset-4 hover:opacity-85 transition"
+                className="text-sky-950 text-sm font-semibold rounded-lg py-2 px-3 md:text-base underline underline-offset-4 hover:opacity-85 border-l border-sky-800/40 transition"
               >
                 Entrar
               </Link>
@@ -59,10 +76,18 @@ export function Header() {
               </Link>
             </>
           ) : (
-            <div className="flex items-center gap-3">
-              <span className="font-semibold text-white">Olá, {userName}</span>
+            <div className="flex items-center gap-3 ">
+              <Link
+                href="/agenda"
+                className="text-sky-950 text-sm font-semibold rounded-lg py-2 px-3 md:text-base underline underline-offset-4 hover:opacity-85 transition"
+              >
+                Minha agenda
+              </Link>
+              <span className="font-semibold text-white py-2 pl-3 border-l border-sky-800/40">
+                Olá, {userName}
+              </span>
               <button
-                className="text-sky-950 text-sm font-semibold py-2 px-3 md:text-base underline underline-offset-4 hover:opacity-85 transition border-l border-sky-800/40"
+                className="text-sky-950 text-sm font-semibold py-2 px-3 md:text-base underline underline-offset-4 hover:opacity-85 transition"
                 onClick={handleLogoff}
               >
                 Sair
