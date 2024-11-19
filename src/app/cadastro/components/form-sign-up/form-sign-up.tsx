@@ -50,11 +50,11 @@ export function FormSignUp() {
         nome: data.name,
         email: data.email,
         senha: data.password,
-        telefone: cleanedPhone,
+        telefone: `55${cleanedPhone}`,
         cpf_cnpj: cleanedCpfOrCnpj,
         categoria_id: Number(data.category),
         subcategoria_id: Number(data.category),
-        atividade: "null",
+        atividade: data.role,
         servico: data.description,
         logo_base64:
           "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...base64string",
@@ -120,7 +120,7 @@ export function FormSignUp() {
         </div>
       )}
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid md:grid-cols-2 md:gap-6">
         <div className="pb-8">
           <label htmlFor="name" className="sr-only">
             Nome
@@ -160,7 +160,7 @@ export function FormSignUp() {
         </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid md:grid-cols-2 md:gap-6">
         <div className="pb-8">
           <label htmlFor="phone" className="sr-only">
             Telefone ou WhatsApp
@@ -199,29 +199,49 @@ export function FormSignUp() {
         </div>
       </div>
 
-      <div className="flex flex-col pb-8">
-        <label htmlFor="category" className="sr-only">
-          Categoria
-        </label>
-        <select
-          className={`cursor-pointer border p-3 hover:bg-zinc-100/80 text-base rounded-lg ${
-            errors.category ? "border-red-500" : ""
-          }`}
-          id="category"
-          aria-describedby={errors.category ? "category-error" : undefined}
-          {...register("category")}
-        >
-          <option value="">Selecione uma categoria</option>
-          <option value="1">Automotivo</option>
-          <option value="2">Beleza</option>
-          <option value="3">Consultoria</option>
-          <option value="4">Fotografia</option>
-          <option value="5">Jardinagem</option>(55) 51981-8381
-          <option value="6">Limpeza</option>
-          <option value="7">Manutenção</option>
-          <option value="Outros">Outros</option>
-        </select>
-        <ErrorMessage error={errors.category?.message} />
+      <div className="grid md:grid-cols-2 md:gap-6">
+        <div className="flex flex-col pb-8">
+          <label htmlFor="category" className="sr-only">
+            Categoria
+          </label>
+          <select
+            className={`cursor-pointer border p-3 hover:bg-zinc-100/80 text-base rounded-lg ${
+              errors.category ? "border-red-500" : ""
+            }`}
+            id="category"
+            aria-describedby={errors.category ? "category-error" : undefined}
+            {...register("category")}
+          >
+            <option value="">Selecione uma categoria</option>
+            <option value="1">Automotivo</option>
+            <option value="2">Beleza</option>
+            <option value="3">Consultoria</option>
+            <option value="4">Fotografia</option>
+            <option value="5">Jardinagem</option>(55) 51981-8381
+            <option value="6">Limpeza</option>
+            <option value="7">Manutenção</option>
+            <option value="Outros">Outros</option>
+          </select>
+          <ErrorMessage error={errors.category?.message} />
+        </div>
+
+        <div className="pb-8">
+          <label htmlFor="role" className="sr-only">
+            Atividade
+          </label>
+          <input
+            className={`w-full border p-3 rounded-lg ${
+              errors.role ? "border-red-500" : ""
+            }`}
+            id="role"
+            type="text"
+            placeholder="Atividade"
+            autoComplete="role"
+            autoCapitalize="words"
+            {...register("role")}
+          />
+          <ErrorMessage error={errors.role?.message} />
+        </div>
       </div>
 
       <div className="pb-8">
@@ -242,7 +262,7 @@ export function FormSignUp() {
         <ErrorMessage error={errors.description?.message} />
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid md:grid-cols-2 md:gap-6">
         <div className="pb-8">
           <label htmlFor="socialMedia" className="sr-only">
             Midia Social
@@ -280,7 +300,7 @@ export function FormSignUp() {
         </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid md:grid-cols-2 md:gap-6">
         <div className="pb-8">
           <label htmlFor="password" className="sr-only">
             Senha

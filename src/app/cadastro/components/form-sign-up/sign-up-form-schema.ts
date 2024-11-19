@@ -26,6 +26,9 @@ export const signUpFormSchema = z.object({
   category: z
     .string()
     .min(1, { message: "Por favor, selecione uma categoria." }),
+  role: z
+    .string()
+    .min(1, { message: "Insira a sua atividade. Ex.: Consultor" }),
   description: z
     .string()
     .min(1, { message: "Descreva seus serviços para completar o cadastro." }),
