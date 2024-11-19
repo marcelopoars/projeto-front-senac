@@ -8,7 +8,7 @@ import { twMerge } from "tailwind-merge";
 import { z } from "zod";
 
 import { ErrorMessage } from "@/components";
-import { api } from "@/lib";
+import { api, categorias } from "@/lib";
 import { normalizeCpfOrCnpj, normalizePhoneNumber } from "@/utils";
 import { signUpFormSchema } from "./sign-up-form-schema";
 import { workRhythm } from "./work-rhythm";
@@ -213,14 +213,11 @@ export function FormSignUp() {
             {...register("category")}
           >
             <option value="">Selecione uma categoria</option>
-            <option value="1">Automotivo</option>
-            <option value="2">Beleza</option>
-            <option value="3">Consultoria</option>
-            <option value="4">Fotografia</option>
-            <option value="5">Jardinagem</option>(55) 51981-8381
-            <option value="6">Limpeza</option>
-            <option value="7">Manutenção</option>
-            <option value="Outros">Outros</option>
+            {categorias.map(({ id, nome }) => (
+              <option key={id} value={id}>
+                {nome}
+              </option>
+            ))}
           </select>
           <ErrorMessage error={errors.category?.message} />
         </div>
