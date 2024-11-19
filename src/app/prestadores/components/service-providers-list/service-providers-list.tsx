@@ -102,11 +102,7 @@ export function ServiceProvidersListContent() {
         {!loading && !error && (
           <div className="grid justify-around content-around grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-12 xl:grid-cols-4">
             {filteredProviders.map(({ prestador: { id, nome, atividade } }) => (
-              <ServiceProvidersCard
-                key={id}
-                name={nome}
-                atividade={atividade}
-              />
+              <ServiceProvidersCard key={id} name={nome} role={atividade} />
             ))}
           </div>
         )}

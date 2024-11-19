@@ -3,13 +3,10 @@ import Link from "next/link";
 
 interface ServiceProviderProps {
   name: string;
-  atividade: string;
+  role: string;
 }
 
-export function ServiceProvidersCard({
-  name,
-  atividade,
-}: ServiceProviderProps) {
+export function ServiceProvidersCard({ name, role }: ServiceProviderProps) {
   return (
     <Link
       href="/prestador"
@@ -22,7 +19,7 @@ export function ServiceProvidersCard({
         <h2 className="font-semibold text-xl text-zinc-600 group-hover:text-sky-500 transition">
           {name}
         </h2>
-        <strong className="text-sky-500">{atividade}</strong>
+        <strong className="text-sky-500">{role}</strong>
       </header>
     </Link>
   );
