@@ -5,6 +5,7 @@ import { ServiceProviderResponse } from "./interfaces";
 
 import { Share } from "./components";
 import { User, WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
+import { createWhatsAppLink } from "@/utils";
 
 async function getServiceProvider(
   id: string
@@ -64,10 +65,10 @@ export default async function ServiceProviderDetailsPage({
 
   const { prestador, usuario, categoria } = data;
 
-  const whatsappMessage = encodeURIComponent(
-    "Olá! Gostaria de saber mais informações sobre os seus serviços."
-  );
-  const whatsappLink = `https://api.whatsapp.com/send?phone=${usuario.telefone}&text=${whatsappMessage}`;
+  const whatsappLink = createWhatsAppLink({
+    phone: usuario.telefone,
+    message: "Olá! Gostaria de saber mais informações sobre os seus serviços.",
+  });
 
   return (
     <section>
