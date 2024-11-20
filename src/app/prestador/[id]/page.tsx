@@ -1,46 +1,16 @@
-import axios from "axios";
 import { Metadata } from "next";
 import Image from "next/image";
+
+import { api } from "@/lib";
+import { ServiceProviderResponse } from "./interfaces";
+
 import { Share } from "./components";
 
-interface ServiceProviderData {
-  prestador: {
-    id: number;
-    cpf_cnpj: string;
-    atividade: string;
-    tipo_agenda: string;
-    categoria_id: number;
-    subcategoria_id: number;
-    services: string[];
-    logo: string;
-    instagram: string;
-    website: string;
-  };
-  usuario: {
-    id: number;
-    nome: string;
-    email: string;
-    telefone: string;
-    tipo_usuario: string;
-  };
-  categoria: {
-    id: number;
-    nome: string;
-  };
-  cidade: {
-    id: number;
-    nome: string;
-  };
-  estado: {
-    id: number;
-    nome: string;
-    sigla: string;
-  };
-}
-
-async function getServiceProvider(id: string): Promise<ServiceProviderData | null> {
+async function getServiceProvider(
+  id: string
+): Promise<ServiceProviderResponse | null> {
   try {
-    const { data } = await axios.get(`https://core.wecom.com.br/gestao/api/management/prestador/${id}`);
+    const { data } = await api.get(`/prestador/${id}`);
     const prestadorData = data.prestadores ? data.prestadores[0] : null;
     if (!prestadorData) {
       throw new Error("Prestador não encontrado.");
@@ -52,22 +22,32 @@ async function getServiceProvider(id: string): Promise<ServiceProviderData | nul
   }
 }
 
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: { id: string };
+}): Promise<Metadata> {
   const data = await getServiceProvider(params.id);
+
   if (!data || !data.usuario) {
     return {
       title: "Prestador não encontrado",
       description: "Os detalhes do prestador não estão disponíveis.",
     };
   }
-  const { usuario } = data;
+  
+  const { usuario, prestador } = data;
   return {
     title: usuario.nome,
-    description: `Perfil de ${usuario.nome}, oferecendo serviços na área de ${usuario.tipo_usuario}.`,
+    description: prestador.services,
   };
 }
 
-export default async function ServiceProviderDetailsPage({ params }: { params: { id: string } }) {
+export default async function ServiceProviderDetailsPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   const data = await getServiceProvider(params.id);
 
   if (!data) {
@@ -82,17 +62,12 @@ export default async function ServiceProviderDetailsPage({ params }: { params: {
     );
   }
 
-  const { prestador, usuario, categoria, cidade, estado } = data;
+  const { prestador, usuario, categoria } = data;
 
   return (
     <section>
       <div className="container px-6 py-12">
-        <div className="flex items-baseline justify-between mb-8">
-          <h1 className="font-bold text-3xl">{usuario.nome}</h1>
-          <Share />
-        </div>
-
-        <div className="flex flex-col items-start gap-12 md:flex-row">
+        <div className="flex flex-col items-start gap-8 md:flex-row md:gap-12">
           <div className="w-full h-[250px] bg-zinc-200 flex items-center justify-center md:w-[250px]">
             {prestador.logo ? (
               <Image
@@ -107,12 +82,18 @@ export default async function ServiceProviderDetailsPage({ params }: { params: {
             )}
           </div>
 
-          <div className="flex-1 max-w-[800px]">
+          <div className="w-full flex-1 max-w-[800px]">
+            <div className="flex items-baseline justify-between mb-8">
+              <h1 className="font-bold text-3xl">{usuario.nome}</h1>
+              <Share />
+            </div>
+
             <div className="mb-8">
-              <h2 className="text-xl font-semibold mb-8">Descrição dos Serviços</h2>
+              <h2 className="text-xl font-semibold mb-8">
+                Descrição dos Serviços
+              </h2>
               <p>Atividade: {prestador.atividade}</p>
               <p>Categoria: {categoria.nome}</p>
-              <p>Localização: {cidade.nome}, {estado.sigla}</p>
             </div>
 
             <div className="mb-8 border-t pt-8">
@@ -131,17 +112,29 @@ export default async function ServiceProviderDetailsPage({ params }: { params: {
 
             <div className="mb-8 border-t pt-8">
               <h2 className="text-xl font-semibold mb-4">Links</h2>
-              <ul>
+              <ul className="space-y-2">
                 {prestador.website && (
                   <li>
-                    <span className="min-w-[100px] inline-block font-semibold">Website</span>
-                    <a href={prestador.website}>{prestador.website}</a>
+                    <a
+                      className="text-sky-500 underline underline-offset-4 hover:text-sky-600 transition"
+                      href={prestador.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {prestador.website}
+                    </a>
                   </li>
                 )}
                 {prestador.instagram && (
                   <li>
-                    <span className="min-w-[100px] inline-block font-semibold">Instagram</span>
-                    <a href={prestador.instagram}>{prestador.instagram}</a>
+                    <a
+                      className="text-sky-500 underline underline-offset-4 hover:text-sky-600 transition"
+                      href={prestador.instagram}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {prestador.instagram}
+                    </a>
                   </li>
                 )}
               </ul>
