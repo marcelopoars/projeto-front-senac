@@ -266,7 +266,7 @@ export function FormSignUp() {
           </label>
           <input
             className={`w-full border p-3 rounded-lg ${
-              errors.password ? "border-red-500" : ""
+              errors.socialMedia ? "border-red-500" : ""
             }`}
             id="socialMedia"
             type="url"
@@ -285,7 +285,7 @@ export function FormSignUp() {
           </label>
           <input
             className={`w-full border p-3 rounded-lg ${
-              errors.password ? "border-red-500" : ""
+              errors.socialMedia ? "border-red-500" : ""
             }`}
             id="website"
             type="url"
