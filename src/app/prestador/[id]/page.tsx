@@ -1,10 +1,10 @@
 import { Metadata } from "next";
-import Image from "next/image";
 
 import { api } from "@/lib";
 import { ServiceProviderResponse } from "./interfaces";
 
 import { Share } from "./components";
+import { User } from "@phosphor-icons/react/dist/ssr";
 
 async function getServiceProvider(
   id: string
@@ -35,7 +35,7 @@ export async function generateMetadata({
       description: "Os detalhes do prestador não estão disponíveis.",
     };
   }
-  
+
   const { usuario, prestador } = data;
   return {
     title: usuario.nome,
@@ -66,34 +66,29 @@ export default async function ServiceProviderDetailsPage({
 
   return (
     <section>
-      <div className="container px-6 py-12">
+      <div className="container px-6 py-12 md:py-20">
         <div className="flex flex-col items-start gap-8 md:flex-row md:gap-12">
-          <div className="w-full h-[250px] bg-zinc-200 flex items-center justify-center md:w-[250px]">
-            {prestador.logo ? (
-              <Image
-                src={prestador.logo}
-                alt={`${usuario.nome} Logo`}
-                width={250}
-                height={250}
-                className="object-contain"
-              />
-            ) : (
-              <span>LOGO</span>
-            )}
+          <div className="w-full h-[250px] bg-zinc-100 flex items-center justify-center md:w-[250px]">
+            <User className="size-24 text-sky-500" />
           </div>
 
           <div className="w-full flex-1 max-w-[800px]">
-            <div className="flex items-baseline justify-between mb-8">
-              <h1 className="font-bold text-3xl">{usuario.nome}</h1>
+            <div className="flex items-baseline justify-between mb-12">
+              <div>
+                <h1 className="font-bold text-3xl">{usuario.nome}</h1>
+                <span className="block text-xl">{prestador.atividade}</span>
+                <span className="block text-lg text-sky-500">
+                  {categoria.nome}
+                </span>
+              </div>
               <Share />
             </div>
 
             <div className="mb-8">
-              <h2 className="text-xl font-semibold mb-8">
+              <h2 className="text-xl font-semibold mb-4">
                 Descrição dos Serviços
               </h2>
-              <p>Atividade: {prestador.atividade}</p>
-              <p>Categoria: {categoria.nome}</p>
+              <p>{prestador.services}</p>
             </div>
 
             <div className="mb-8 border-t pt-8">

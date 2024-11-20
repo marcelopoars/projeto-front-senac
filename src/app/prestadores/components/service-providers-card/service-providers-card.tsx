@@ -8,7 +8,6 @@ interface ServiceProviderProps {
 }
 
 export function ServiceProvidersCard({ id, name, role }: ServiceProviderProps) {
-  console.log("Card ID:", id);
   return (
     <Link
       href={`/prestador/${id}`}
