@@ -1,10 +1,9 @@
 import { useFormat } from "@/hooks";
 import { api } from "@/lib";
+import { createWhatsAppLink, normalizePhoneNumber } from "@/utils";
 import { CaretLeft, Trash, WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
-import { useCallback, useState } from "react";
-
-import { normalizePhoneNumber } from "@/utils";
 import { isBefore, parse, set } from "date-fns";
+import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { Appointment } from "../my-schedule/interfaces";
 
@@ -24,20 +23,14 @@ export function AppointmentDetails({
     text: string;
   } | null>(null);
 
-  const whatsAppUrl = useCallback(
-    (name: string, date: string, hour: string) => {
-      const phoneNumber = cliente.telefone;
-
-      const message = encodeURIComponent(
-        `Olá ${name}! \n\nGostaria de confirmar o seu agendamento para o dia ${toLongDate(
-          date
-        )} às ${hour}. \n\nPosso confirmar? \n1 - Sim \n2 - Não`
-      );
-
-      return `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${message}`;
-    },
-    [cliente.telefone, toLongDate]
-  );
+  const whatsappLink = createWhatsAppLink({
+    phone: cliente.telefone,
+    message: `Olá ${
+      cliente.nome
+    }! \n\nGostaria de confirmar o seu agendamento para o dia ${toLongDate(
+      agendamento.data_agendamento
+    )} às ${agendamento.hora_inicio}. \n\nPosso confirmar? \n1 - Sim \n2 - Não`,
+  });
 
   const authToken =
     document.cookie.match(/(?:^|;\s*)authToken=([^;]*)/)?.[1] || null;
@@ -91,11 +84,7 @@ export function AppointmentDetails({
 
         <a
           className="flex items-center justify-center gap-2 bg-green-500 font-semibold py-2 px-4 rounded-full hover:bg-green-700 hover:text-white transition"
-          href={whatsAppUrl(
-            cliente.nome,
-            agendamento.data_agendamento,
-            formatHour(agendamento.hora_inicio)
-          )}
+          href={whatsappLink}
           target="_blank"
           rel="noopener noreferrer"
         >

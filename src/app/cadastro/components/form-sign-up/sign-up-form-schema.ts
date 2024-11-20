@@ -44,7 +44,7 @@ export const signUpFormSchema = z.object({
           return false;
         }
       },
-      { message: "Insira uma URL válida." }
+      { message: "URL invválida. Ex.: https://instagram/meuperfil" }
     ),
   website: z
     .string()
@@ -58,7 +58,7 @@ export const signUpFormSchema = z.object({
           return false;
         }
       },
-      { message: "Insira uma URL válida." }
+      { message: "URL invválida. Ex.: https://meusite.com.br" }
     ),
   password: z.string().min(1, { message: "Por favor, insira sua senha." }),
   confirmPassword: z

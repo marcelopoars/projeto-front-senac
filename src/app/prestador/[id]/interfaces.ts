@@ -15,3 +15,14 @@ export interface ServiceProviderResponse {
     nome: string;
   };
 }
+
+export interface Prestador {
+  nome: string;
+  atividade: string;
+  categoria: string;
+  services: string;
+  email: string;
+  telefone: string;
+  instagram: string;
+  website: string;
+}
