@@ -4,7 +4,7 @@ import { api } from "@/lib";
 import { ServiceProviderResponse } from "./interfaces";
 
 import { Share } from "./components";
-import { User } from "@phosphor-icons/react/dist/ssr";
+import { User, WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
 
 async function getServiceProvider(
   id: string
@@ -64,6 +64,11 @@ export default async function ServiceProviderDetailsPage({
 
   const { prestador, usuario, categoria } = data;
 
+  const whatsappMessage = encodeURIComponent(
+    "Olá! Gostaria de saber mais informações sobre os seus serviços."
+  );
+  const whatsappLink = `https://api.whatsapp.com/send?phone=${usuario.telefone}&text=${whatsappMessage}`;
+
   return (
     <section>
       <div className="container px-6 py-12 md:py-20">
@@ -91,18 +96,30 @@ export default async function ServiceProviderDetailsPage({
               <p>{prestador.services}</p>
             </div>
 
-            <div className="mb-8 border-t pt-8">
-              <h2 className="text-xl font-semibold mb-4">Contato</h2>
-              <ul className="space-y-4">
-                <li>
-                  <strong className="block">Email:</strong>
-                  <span>{usuario.email}</span>
-                </li>
-                <li>
-                  <strong className="block">Fone/WhatsApp:</strong>
-                  <span>{usuario.telefone}</span>
-                </li>
-              </ul>
+            <div className="flex flex-col gap-8 items-start mb-8 border-t pt-8 md:flex-row md:justify-between">
+              <div>
+                <h2 className="text-xl font-semibold mb-4">Contato</h2>
+                <ul className="space-y-4">
+                  <li>
+                    <strong className="block">Email:</strong>
+                    <span>{usuario.email}</span>
+                  </li>
+                  <li>
+                    <strong className="block">Fone/WhatsApp:</strong>
+                    <span>{usuario.telefone}</span>
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <a
+                  className="flex items-center justify-center gap-2 bg-green-500 font-semibold py-2 px-4 rounded-full hover:bg-green-700 hover:text-white transition"
+                  href={whatsappLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {<WhatsappLogo className="size-6" />} WhatsApp
+                </a>
+              </div>
             </div>
 
             <div className="mb-8 border-t pt-8">

@@ -1,10 +1,9 @@
 import { useFormat } from "@/hooks";
 import { api } from "@/lib";
-import { CaretLeft, Trash, WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
-import { useCallback, useState } from "react";
-
 import { normalizePhoneNumber } from "@/utils";
+import { CaretLeft, Trash, WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
 import { isBefore, parse, set } from "date-fns";
+import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { Appointment } from "../my-schedule/interfaces";
 
@@ -24,20 +23,17 @@ export function AppointmentDetails({
     text: string;
   } | null>(null);
 
-  const whatsAppUrl = useCallback(
-    (name: string, date: string, hour: string) => {
-      const phoneNumber = cliente.telefone;
+  const whatsAppUrl = (name: string, date: string, hour: string) => {
+    const phoneNumber = cliente.telefone;
 
-      const message = encodeURIComponent(
-        `Olá ${name}! \n\nGostaria de confirmar o seu agendamento para o dia ${toLongDate(
-          date
-        )} às ${hour}. \n\nPosso confirmar? \n1 - Sim \n2 - Não`
-      );
+    const message = encodeURIComponent(
+      `Olá ${name}! \n\nGostaria de confirmar o seu agendamento para o dia ${toLongDate(
+        date
+      )} às ${hour}. \n\nPosso confirmar? \n1 - Sim \n2 - Não`
+    );
 
-      return `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${message}`;
-    },
-    [cliente.telefone, toLongDate]
-  );
+    return `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${message}`;
+  };
 
   const authToken =
     document.cookie.match(/(?:^|;\s*)authToken=([^;]*)/)?.[1] || null;
