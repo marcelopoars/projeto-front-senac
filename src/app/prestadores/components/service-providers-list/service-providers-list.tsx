@@ -29,7 +29,7 @@ type Provider = {
 export function ServiceProvidersListContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const initialCategoryId = searchParams.get("categoria") || "10";
+  const initialCategoryId = searchParams.get("categoria") || "4";
 
   const [selectedCategory, setSelectedCategory] = useState<string>(
     String(initialCategoryId)
