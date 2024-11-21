@@ -13,3 +13,7 @@ describe(":: Utils :: normalizeCpfOrCnpj", () => {
     expect(normalizeCpfOrCnpj("123456780001950000")).toBe("12.345.678/0001-95");
   });
 });
+
+
+
+
