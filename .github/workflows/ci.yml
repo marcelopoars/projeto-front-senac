@@ -3,7 +3,7 @@ name: CI
 on:
   pull_request:
     branches:
-      - develop  # ou a branch principal do seu projeto
+      - develop
 
 jobs:
   test:
@@ -16,7 +16,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '20'  # ou a versão que você estiver usando
+          node-version: '20'
 
       - name: Install dependencies
         run: npm install
