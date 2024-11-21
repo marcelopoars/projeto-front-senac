@@ -58,7 +58,6 @@ export function AppointmentForm({
 
   const getAuthTokenFromCookies = () => {
     const cookieString = document.cookie;
-    console.log("cookieString", cookieString);
 
     const cookies = cookieString
       .split("; ")
@@ -72,7 +71,6 @@ export function AppointmentForm({
 
   const getProviderIdFromLocalStorage = () => {
     const providerId = localStorage.getItem("providerId");
-    console.log("Provider ID:", providerId);
     return providerId;
   };
 
@@ -95,7 +93,7 @@ export function AppointmentForm({
     }
 
     const newAppointment = {
-      cliente_telefone: data.phone.replace(/\D/g, ""),
+      cliente_telefone: `55${data.phone.replace(/\D/g, "")}`,
       cliente_nome: data.name,
       prestador_id: providerId,
       data_agendamento: toISO(selectedDate),

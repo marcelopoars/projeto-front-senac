@@ -10,6 +10,7 @@ import { TimeStamps } from "../timestamps";
 import { AppointmentDetails } from "../appointment-details";
 import { AppointmentForm } from "../appointment-form";
 import { Appointment, AppointmentResponse } from "./interfaces";
+import { isWeekend } from "date-fns";
 
 type RenderContent = "appointmentDetails" | "appointmentForm" | "timeStamps";
 
@@ -120,6 +121,10 @@ export function MySchedule() {
     status: appointment.agendamento.status,
   }));
 
+  const isWeekendDate = (date: Date | null): boolean => {
+    return date ? isWeekend(date) : false;
+  };
+
   return (
     <section className="h-full">
       <div className="container px-6 py-12">
@@ -129,16 +134,27 @@ export function MySchedule() {
           </h1>
         </div>
 
-        <div className="grid grid-cols-2 gap-8 lg:flex-row">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:flex-row">
           <Calendar onDateSelect={handleDateSelect} />
 
           {renderContent === "timeStamps" && (
-            <TimeStamps
-              onTimeSelect={handleTimeSelect}
-              selectedDate={selectedDate}
-              appointments={mappedAppointments}
-              isLoading={loading}
-            />
+            <>
+              {isWeekendDate(selectedDate) ? (
+                <div className="flex items-center justify-center">
+                  <p className="text-xl text-zinc-500 text-center text-balance">
+                    Os agendamentos não estão disponíveis aos finais de semana.
+                    Por favor, selecione um dia útil.
+                  </p>
+                </div>
+              ) : (
+                <TimeStamps
+                  onTimeSelect={handleTimeSelect}
+                  selectedDate={selectedDate}
+                  appointments={mappedAppointments}
+                  isLoading={loading}
+                />
+              )}
+            </>
           )}
 
           {renderContent === "appointmentForm" && (
