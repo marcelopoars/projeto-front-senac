@@ -1,3 +1,7 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"]
+  "extends": ["next/core-web-vitals", "next/typescript"],
+  "rules": {
+    "no-unused-vars": "warn", // Exemplo de regra personalizada
+    "react/react-in-jsx-scope": "off" // Caso esteja usando React 18 com JSX automático
+  }
 }
