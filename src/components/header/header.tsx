@@ -46,10 +46,25 @@ export function Header() {
     setIsMenuOpen(false);
   };
 
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMenuOpen]);
+
   return (
     <header className="bg-sky-500">
       <div className="container flex items-center justify-between py-4 px-6">
-        <Link href={"/"} className="flex items-center gap-1 font-bold text-white text-xl">
+        <Link
+          href={"/"}
+          className="flex items-center gap-1 font-bold text-white text-xl"
+        >
           <Calendar className="size-10" />
           Agendar
         </Link>
