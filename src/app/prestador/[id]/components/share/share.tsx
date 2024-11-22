@@ -32,7 +32,7 @@ export function Share() {
 
   return (
     <button className="flex items-center gap-1" onClick={handleShare}>
-      <span className="">Compartilhar</span>
+      <span className="hidden lg:block">Compartilhar</span>
       <ShareFat size={24} className="text-sky-500" />
     </button>
   );
