@@ -1,8 +1,8 @@
 import { normalizeCpfOrCnpj } from "./normalize-cpf-or-cnpj";
 
-describe(":: Utils :: normalizeCpfOrCnpj", () => {
+describe(":: Utils :: mask :: normalizeCpfOrCnpj", () => {
   it("should format a valid CPF", () => {
-    expect(normalizeCpfOrCnpj("12345678901")).toBe("123.456.789-01######");
+    expect(normalizeCpfOrCnpj("12345678901")).toBe("123.456.789-01");
   });
 
   it("should format a valid CNPJ", () => {
