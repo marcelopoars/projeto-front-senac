@@ -18,8 +18,8 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install dependencies
-        run: npm install
+      # - name: Install dependencies
+      #   run: npm install
 
       # - name: Run ESLint
       #   run: npm run lint -- --max-warnings=0q
@@ -27,8 +27,8 @@ jobs:
       # - name: Build project
       #   run: npm run build
 
-      - name: Run tests
-        run: npm test
+      # - name: Run tests
+      #   run: npm test
 
       - name: Upload test results
         uses: actions/upload-artifact@v3

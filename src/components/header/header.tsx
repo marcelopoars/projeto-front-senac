@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar, List, X } from "@phosphor-icons/react/dist/ssr";
+import { Calendar, List, SignOut, X } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -144,11 +144,11 @@ export function Header() {
               </span>
 
               <button
-                className="text-sky-950 text-lg font-semibold py-2 px-3 lg:text-base hover:opacity-85 transition"
+                className="flex items-center gap-2 text-sky-950 text-lg font-semibold py-2 px-3 lg:text-base hover:opacity-85 transition"
                 aria-label="Sair"
                 onClick={handleLogoff}
               >
-                Sair
+                Sair <SignOut className="size-5" />
               </button>
             </>
           )}
