@@ -1,6 +1,6 @@
 "use client";
 
-import { normalizePhoneNumber } from "@/utils";
+import { normalizePhoneNumber, toLongDate } from "@/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CaretLeft } from "@phosphor-icons/react/dist/ssr";
 import { useEffect, useState } from "react";
@@ -32,7 +32,7 @@ export function AppointmentForm({
   selectedTime,
   onBack,
 }: AppointmentFormProps) {
-  const { toLongDate, toISO, formatHour } = useFormat();
+  const { toISO, formatHour } = useFormat();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 

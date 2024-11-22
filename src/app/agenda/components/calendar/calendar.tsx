@@ -27,6 +27,11 @@ export function Calendar({ onDateSelect }: CalendarProps) {
     return day === 0 || day === 6; // 0 = domingo, 6 = sábado
   };
 
+  const tileClassName = ({ date }: { date: Date }) => {
+    const day = date.getDay();
+    return day === 0 || day === 6 ? "opacity-50 pointer-events-none" : "";
+  };
+
   return (
     <ReactCalendar
       className="flex-1 bg-red-700"
@@ -38,11 +43,7 @@ export function Calendar({ onDateSelect }: CalendarProps) {
       prev2Label={<CaretDoubleLeft />}
       next2Label={<CaretDoubleRight />}
       tileDisabled={disableWeekends}
-      tileClassName={({ date }) =>
-        date.getDay() === 0 || date.getDay() === 6
-          ? "opacity-50 pointer-events-none"
-          : ""
-      }
+      tileClassName={tileClassName}
       goToRangeStartOnSelect
     />
   );
