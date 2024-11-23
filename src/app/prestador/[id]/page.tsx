@@ -77,11 +77,11 @@ export default async function ServiceProviderDetailsPage({
           <Avatar />
 
           <div className="w-full flex-1 max-w-[800px]">
-            <div className="flex items-baseline justify-between mb-12">
+            <div className="flex items-baseline justify-between mb-8 lg:mb-12">
               <div>
-                <h1 className="font-bold text-3xl">{usuario.nome}</h1>
-                <span className="block text-xl">{prestador.atividade}</span>
-                <span className="block text-lg text-sky-500">
+                <h1 className="font-bold text-2xl lg:text-3xl">{usuario.nome}</h1>
+                <span className="block lg:text-xl">{prestador.atividade}</span>
+                <span className="block text-sky-500">
                   {categoria.nome}
                 </span>
               </div>

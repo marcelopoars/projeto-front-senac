@@ -1,8 +1,7 @@
 import { useFormat } from "@/hooks";
 import { api } from "@/lib";
-import { createWhatsAppLink, normalizePhoneNumber } from "@/utils";
+import { createWhatsAppLink, normalizePhoneNumber, toLongDate } from "@/utils";
 import { CaretLeft, Trash, WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
-import { isBefore, parse, set } from "date-fns";
 import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { Appointment } from "../my-schedule/interfaces";
@@ -16,7 +15,7 @@ export function AppointmentDetails({
   appointment: { agendamento, cliente },
   onBack,
 }: AppointmentDetailsProps) {
-  const { toLongDate, formatHour } = useFormat();
+  const { formatHour } = useFormat();
   const [loading, setLoading] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState<{
     type: "success" | "error";
@@ -40,7 +39,7 @@ export function AppointmentDetails({
     setFeedbackMessage(null);
 
     try {
-      const response = await api.delete(`/agendamentos/${agendamento.id}`, {
+      await api.delete(`/agendamentos/${agendamento.id}`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },
@@ -48,7 +47,6 @@ export function AppointmentDetails({
 
       setFeedbackMessage({ type: "success", text: "Agendamento cancelado!" });
 
-      console.log("Status do agendamento atualizado!", response.data);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       const message =
@@ -63,19 +61,14 @@ export function AppointmentDetails({
   const isPastHour = (hour: string): boolean => {
     if (!agendamento.data_agendamento) return false;
 
-    const selectedHour = parse(hour, "HH:mm:ss", new Date());
+    const now = new Date();
 
-    const buttonTime = set(agendamento.data_agendamento, {
-      hours: selectedHour.getHours(),
-      minutes: selectedHour.getMinutes(),
-      seconds: 0,
-      milliseconds: 0,
-    });
+    const agendamentoDate = agendamento.data_agendamento.split("T")[0];
 
-    return isBefore(buttonTime, new Date());
+    const agendamentoDateTime = new Date(`${agendamentoDate}T${hour}:00`);
+
+    return agendamentoDateTime <= now;
   };
-
-  console.log(isPastHour(agendamento.hora_inicio));
 
   return (
     <div className="flex flex-col py-8 px-6 bg-zinc-100/80">
